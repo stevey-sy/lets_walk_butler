@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CheckInfoActivity"
+    android:orientation="vertical"
+    android:layout_marginHorizontal="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/str_dog_info_heading"
+        android:textSize="30sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="10" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stn_dog_name_subheading"
+            android:textSize="18sp"
+            android:layout_marginTop="40dp"
+            android:layout_weight="5"/>
+
+        <TextView
+            android:id="@+id/str_show_dog_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stn_show_dog_name"
+            android:textSize="18sp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="40dp"
+            android:layout_weight="5"
+            android:layout_marginStart="40dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        android:layout_marginTop="40dp">
+
+        <TextView
+            android:id="@+id/walk_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stn_walk_distance_subheading"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:gravity="center"
+            android:layout_weight="5"/>
+
+        <TextView
+            android:id="@+id/recommend_walk_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stn_show_walk_recommend"
+            android:textSize="18sp"
+            android:layout_marginLeft="60dp"
+            android:layout_weight="5"
+            android:layout_marginStart="60dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        android:layout_marginTop="40dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stn_dog_weight_subheading"
+            android:textSize="18sp"
+            android:layout_weight="3"/>
+
+        <TextView
+            android:id="@+id/show_info_dog_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stn_show_dog_weight"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:layout_weight="5"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stn_kg"
+            android:textSize="18sp"
+            android:layout_weight="2" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        android:layout_marginTop="40dp">
+
+        <TextView
+            android:id="@+id/daily_food_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stn_daily_food_amount_subheading"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_weight="3"
+            />
+
+        <TextView
+            android:id="@+id/show_daily_food_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stn_show_daily_recommend_food"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@id/walk_amount"
+            app:layout_constraintLeft_toRightOf="@id/daily_food_weight"
+            android:layout_weight="7"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_go_to_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/stn_go_out"
+        android:layout_marginTop="50dp" />
+
+</LinearLayout>
+

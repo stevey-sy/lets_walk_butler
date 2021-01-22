@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp">
+
+        <TextView
+            android:id="@+id/dog_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            tools:text="이름"
+            android:text="이름: "/>
+
+        <TextView
+            android:id="@+id/show_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            tools:text="이름"
+            android:gravity="center"
+            android:layout_toRightOf="@id/dog_name"/>
+
+        <TextView
+            android:id="@+id/subheading_age"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="나이: "
+            android:textColor="@android:color/black"
+            android:layout_below="@id/show_name"/>
+
+        <TextView
+            android:id="@+id/show_age"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            tools:text="나이 표시"
+            android:layout_below="@id/show_name"
+            android:layout_toRightOf="@id/subheading_age"/>
+
+        <TextView
+            android:id="@+id/show_dog_weight"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="무게"
+            android:textColor="@android:color/black"
+            android:layout_below="@id/show_name"
+            android:layout_toRightOf="@id/show_age"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/weight_format"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="KG"
+            android:layout_below="@id/show_name"
+            android:layout_toRightOf="@id/show_dog_weight"/>
+
+
+        <TextView
+        android:id="@+id/subheading_dog_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/subheading_age"
+        android:layout_marginTop="4dp"
+        android:textColor="@android:color/black"
+        android:textSize="15sp"
+        android:text="견종: " />
+
+        <TextView
+            android:id="@+id/show_dog_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/show_age"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="60dp"
+            android:layout_toRightOf="@id/subheading_dog_type"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            tools:text="견종 나오는 부분 " />
+
+
+    </RelativeLayout>
+
+
+
+</androidx.cardview.widget.CardView>

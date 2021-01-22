@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text="권장 산책량 :" />
+
+    <TextView
+        android:id="@+id/tv_walk_recommend"
+        android:layout_marginLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="권장 산책량 내용"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="권장 식사량 : "
+        android:textSize="25sp"
+        />
+
+    <TextView
+        android:id="@+id/tv_food_recommend"
+        android:layout_marginLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="권장 식사량 내용"
+        android:textSize="20sp" />
+
+    <Button
+        android:backgroundTint="@color/colorAccent"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="나가기" />
+
+
+</LinearLayout>

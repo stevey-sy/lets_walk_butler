@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/layout_go_walk"
+    tools:context=".GoWalkActivity"
+    android:layout_weight="10">
+
+    <fragment
+        android:layout_marginTop="0dp"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="360dp"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toTopOf="@id/second_layer"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="3"
+        tools:context=".MapsActivity" />
+
+<!--    <ScrollView-->
+<!--        android:id="@+id/scroll_view_go_walk"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/map">-->
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/second_layer"
+        android:layout_marginTop="250dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="38dp">
+
+        <TextView
+            android:id="@+id/timeCount"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:ems="10"
+            android:gravity="center"
+            android:text="@string/go_walk_count_time"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@id/calorieCount"
+            app:layout_constraintStart_toEndOf="@id/meterCount"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/calorieCount"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:ems="10"
+            android:gravity="center"
+            android:text="@string/go_walk_count_calorie"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/calorieTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/timeCount"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/meterCount"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:autofillHints="no"
+            android:ems="10"
+            android:gravity="center"
+            android:text="@string/go_walk_meter_count"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/meterTitle"
+            app:layout_constraintEnd_toStartOf="@+id/timeCount"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--  산책 상태를 보여주는 수치의 제목 텍스트-->
+
+        <TextView
+            android:id="@+id/calorieTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:text="걸음 수"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/timeTitle"
+            app:layout_constraintTop_toBottomOf="@+id/timeCount" />
+
+        <TextView
+            android:id="@+id/timeTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/go_walk_title_time"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/calorieTitle"
+            app:layout_constraintStart_toEndOf="@+id/meterTitle"
+            app:layout_constraintTop_toBottomOf="@+id/timeCount" />
+
+        <TextView
+            android:id="@+id/meterTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:gravity="center"
+            android:text="@string/go_walk_title_distance"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/timeTitle"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeCount" />
+
+        <Button
+            android:id="@+id/pauseButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/go_walk_pause"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toStartOf="@+id/stopButton"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/meterTitle" />
+
+        <Button
+            android:id="@+id/stopButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/go_walk_stopWalk"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/pauseButton"
+            app:layout_constraintTop_toBottomOf="@+id/calorieTitle" />
+
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/timeRecordTitle"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="44dp"-->
+        <!--                android:layout_marginTop="10dp"-->
+        <!--                android:text="오늘의 산책량 :"-->
+        <!--                android:textSize="20sp"-->
+        <!--                app:layout_constraintTop_toBottomOf="@id/walkStartButton"-->
+
+        <!--                app:layout_constraintStart_toStartOf="parent"-->
+        <!--                tools:layout_editor_absoluteY="234dp" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/time_record_view"-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="44dp"-->
+        <!--                android:gravity="center"-->
+        <!--                android:text="TextView"-->
+        <!--                android:textSize="20sp"-->
+        <!--                app:layout_constraintTop_toBottomOf="@id/walkStartButton"-->
+        <!--                app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                app:layout_constraintStart_toEndOf="@+id/timeRecordTitle"-->
+        <!--                tools:layout_editor_absoluteY="234dp" />-->
+
+
+        <!--            <EditText-->
+        <!--                android:id="@+id/edit_memo_go_walk"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginTop="56dp"-->
+        <!--                android:autofillHints="no"-->
+        <!--                android:hint="@string/go_walk_memo_user_guide"-->
+        <!--                android:inputType="text"-->
+        <!--                android:text=""-->
+        <!--                android:visibility="invisible"-->
+        <!--                app:layout_constraintTop_toBottomOf="@+id/walkStartButton"-->
+        <!--                tools:layout_editor_absoluteX="0dp" />-->
+
+        <Button
+            android:id="@+id/btnCamera"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="60dp"
+            android:backgroundTint="@color/colorAccent"
+            android:text="사진 찰영"
+            app:layout_constraintTop_toBottomOf="@+id/meterTitle"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <Button
+            android:id="@+id/walkStartButton"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/go_walk_start"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeTitle" />
+
+
+
+
+        <!--            <ProgressBar-->
+        <!--                android:id="@+id/progressBar"-->
+        <!--                style="?android:attr/progressBarStyleHorizontal"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="27dp"-->
+        <!--                android:layout_marginHorizontal="40dp"-->
+        <!--                android:max="30"-->
+        <!--                app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                app:layout_constraintStart_toStartOf="parent"-->
+        <!--                tools:layout_editor_absoluteY="156dp" />-->
+
+        <!--            <Button-->
+        <!--                android:id="@+id/btnSetTime"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginTop="4dp"-->
+        <!--                android:layout_marginEnd="100dp"-->
+        <!--                android:layout_marginRight="100dp"-->
+        <!--                android:backgroundTint="@color/colorPrimary"-->
+        <!--                android:text="목표시간 설정"-->
+        <!--                android:textColor="#ffffff"-->
+        <!--                android:textColorHighlight="@color/colorPrimaryDark"-->
+        <!--                android:textStyle="bold"-->
+        <!--                app:layout_constraintEnd_toStartOf="@+id/show_mission_time"-->
+        <!--                app:layout_constraintStart_toStartOf="parent"-->
+        <!--                app:layout_constraintTop_toBottomOf="@+id/meterTitle" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/show_mission_time"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:text="TextView"-->
+        <!--                android:textColor="@color/colorPrimaryDark"-->
+        <!--                app:layout_constraintEnd_toStartOf="@+id/subheadingMinute"-->
+        <!--                app:layout_constraintStart_toEndOf="@+id/btnSetTime"-->
+        <!--                app:layout_constraintTop_toBottomOf="@+id/subheadingMission" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/subheadingMission"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginTop="5dp"-->
+        <!--                android:text="설정된 미션 :"-->
+        <!--                android:textColor="@color/colorPrimaryDark"-->
+        <!--                app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                app:layout_constraintStart_toEndOf="@+id/btnSetTime"-->
+        <!--                app:layout_constraintTop_toBottomOf="@+id/calorieTitle" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/subheadingMinute"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:text="분"-->
+        <!--                android:textColor="@color/colorPrimaryDark"-->
+        <!--                app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                app:layout_constraintStart_toEndOf="@+id/show_mission_time"-->
+        <!--                app:layout_constraintTop_toBottomOf="@+id/subheadingMission" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/showProgress"-->
+        <!--                android:layout_width="69dp"-->
+        <!--                android:layout_height="46dp"-->
+        <!--                android:text=""-->
+        <!--                app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                app:layout_constraintStart_toStartOf="parent"-->
+        <!--                app:layout_constraintTop_toBottomOf="@id/btnSetTime" />-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:id="@id/scrollView"
+        app:layout_constraintTop_toBottomOf="@id/second_layer"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="500dp" >
+
+        <ImageView
+            android:id="@+id/photo_view"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            tools:layout_editor_absoluteX="46dp"
+            tools:layout_editor_absoluteY="537dp" />
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp">
+
+        <TextView
+            android:id="@+id/category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            tools:text="식사"
+            android:text="식사"/>
+
+        <TextView
+            android:id="@+id/input_food_name"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            tools:text="사료명"
+            android:layout_below="@id/category"/>
+
+        <TextView
+            android:id="@+id/input_food_weight"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            tools:text="무게"
+            android:layout_below="@id/category"
+            android:layout_toRightOf="@id/input_food_name"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/title_gram"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="g"
+            android:layout_toRightOf="@id/input_food_weight"
+            android:layout_below="@id/category" />
+
+        <TextView
+            android:id="@+id/input_weight_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="단위"
+            android:layout_below="@id/category"
+            android:layout_toRightOf="@id/title_gram"/>
+
+        <TextView
+            android:layout_marginTop="5dp"
+            android:id="@+id/subheading_memo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_food_name"
+            android:text="메모: " />
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/show_memo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_food_name"
+            android:layout_margin="4dp"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            tools:text="메모"
+            android:layout_toRightOf="@id/subheading_memo"
+            android:text="메모"/>
+
+        <TextView
+            android:id="@+id/show_regdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/memo"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="2020 / 06 / 05"
+            android:textSize="15sp" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

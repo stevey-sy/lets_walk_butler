@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+<!--어플 이름 상단에 보이는 텍스트뷰-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/textView_record_heading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/record_heading"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <CalendarView
+            android:id="@+id/calendarView_record_calendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView_record_heading" />
+        <!--산책 기록 소제목-->
+        <TextView
+            android:id="@+id/textView_record_subheading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/record_subheading_walk_log"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/calendarView_record_calendar"
+            app:layout_constraintBottom_toTopOf="@id/editText_record_show_date"/>
+
+        <TextView
+            android:id="@+id/textView_record_subheading_distance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:gravity="center"
+            android:text="@string/record_subheading_distance"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/editText_record_count_time"
+            app:layout_constraintEnd_toStartOf="@+id/textView_record_subheading_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText_record_show_date" />
+
+        <TextView
+            android:id="@+id/textView_record_subheading_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/record_subheading_time"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/editText_record_count_time"
+            app:layout_constraintEnd_toStartOf="@+id/textView_record_subheading_calorie"
+            app:layout_constraintStart_toEndOf="@+id/textView_record_subheading_distance"
+            app:layout_constraintTop_toBottomOf="@+id/editText_record_show_date" />
+
+        <TextView
+            android:id="@+id/textView_record_subheading_calorie"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:text="@string/record_subheading_calorie"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/editText_record_count_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView_record_subheading_time"
+            app:layout_constraintTop_toBottomOf="@+id/editText_record_show_date" />
+
+        <ImageView
+            android:id="@+id/imageView_record_show_map_image"
+            android:layout_width="360dp"
+            android:layout_height="156dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editText_record_count_time"
+            app:layout_constraintBottom_toTopOf="@id/editText_record_memo"
+            app:srcCompat="@drawable/ic_launcher_background"
+            android:contentDescription="@string/record_guide_map"
+            tools:layout_editor_absoluteY="608dp" />
+
+        <TextView
+            android:id="@+id/editText_record_count_distance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:ems="10"
+            android:gravity="center"
+            android:text="@string/record_count_distance"
+            app:layout_constraintBottom_toTopOf="@+id/imageView_record_show_map_image"
+            app:layout_constraintEnd_toStartOf="@+id/editText_record_count_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView_record_subheading_distance" />
+
+        <TextView
+            android:id="@+id/editText_record_count_calorie"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:ems="10"
+            android:gravity="center"
+            android:text="@string/record_count_calorie"
+            app:layout_constraintBottom_toTopOf="@+id/imageView_record_show_map_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/editText_record_count_time"
+            app:layout_constraintTop_toBottomOf="@id/textView_record_subheading_calorie" />
+
+        <TextView
+            android:id="@+id/editText_record_count_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:gravity="center"
+            android:text="@string/record_count_time"
+            app:layout_constraintBottom_toTopOf="@id/imageView_record_show_map_image"
+            app:layout_constraintEnd_toStartOf="@id/editText_record_count_calorie"
+            app:layout_constraintStart_toEndOf="@+id/editText_record_count_distance"
+            app:layout_constraintTop_toBottomOf="@id/textView_record_subheading_time"
+            />
+
+        <TextView
+            android:id="@+id/editText_record_show_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/record_show_date"
+            android:ems="10"
+            android:hint="@string/record_show_date"
+            android:text="@string/record_show_date"
+            app:layout_constraintBottom_toTopOf="@id/textView_record_subheading_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.592"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_record_subheading" />
+
+        <EditText
+            android:id="@+id/editText_record_memo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/record_guide_user_input"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:text=""
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageView_record_show_map_image" />
+
+        <Button
+            android:id="@+id/btn_record_memo_complete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/record_memo_complete"
+            app:layout_constraintTop_toBottomOf="@id/editText_record_memo"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name = "type_category">
+        <item>g</item>
+        <item>Kg</item>
+        <item>개</item>
+    </array>
+
+</resources>

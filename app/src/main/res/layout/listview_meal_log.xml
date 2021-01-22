@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="5">
+
+    <ImageView
+        android:id="@+id/imageview_meal_log"
+        android:layout_width="80dp"
+        android:layout_height="match_parent" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="10"
+        android:layout_weight="3">
+
+        <TextView
+            android:id="@+id/text_meal_log_subheading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="날짜"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:layout_weight="5"/>
+
+        <TextView
+            android:id="@+id/text_meal_log_food_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="사료명 표시"
+            android:textColor="#666666"
+            android:textSize="16sp"
+            android:layout_weight="5"
+            android:gravity="center_vertical"/>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="10"
+        android:layout_weight="3"
+        android:layout_marginLeft="40dp">
+
+        <TextView
+            android:id="@+id/text_meal_log_show_date"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="날짜 표시"
+            android:textSize="24sp"
+            android:layout_weight="5"
+            android:gravity="center"/>
+
+
+
+        <TextView
+            android:id="@+id/text_meal_log_food_weight"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="무게 표시"
+            android:textSize="16sp"
+            android:layout_weight="5"
+            android:gravity="center"/>
+
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

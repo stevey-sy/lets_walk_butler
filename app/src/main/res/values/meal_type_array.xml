@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="category">
+        <item>식사</item>
+        <item>간식</item>
+        <item>기타</item>
+    </array>
+</resources>

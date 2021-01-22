@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/title_walklog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="산책 기록장"
+            android:gravity="center"
+            android:textSize="25sp"
+            android:background="@color/colorAccent"/>
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/title_walklog"
+            android:id="@+id/subheading_walk_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="날짜 : "
+            android:textSize="20sp" />
+
+        <EditText
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/title_walklog"
+            android:id="@+id/insert_walk_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/subheading_walk_date"
+            android:gravity="center"
+            android:text="2020 / 06 / 04"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/subheading_walk_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/subheading_walk_date"
+            android:layout_marginTop="30dp"
+            android:text="산책시간 : "
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/insert_walk_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/subheading_walk_date"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_toRightOf="@id/subheading_walk_time"
+            android:gravity="center"
+            tools:text="산책 시간 입력" />
+
+
+        <TextView
+            android:id="@+id/subheading_walk_meter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/subheading_walk_time"
+            android:layout_marginTop="30dp"
+            android:text="산책 거리 : "
+            android:textSize="20sp" />
+
+
+        <EditText
+            android:id="@+id/insert_walk_meter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/insert_walk_time"
+            android:layout_toRightOf="@id/subheading_walk_meter"
+            android:gravity="center"
+            android:text="미터 입력 부분"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/title_step_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/subheading_walk_meter"
+            android:layout_marginTop="10dp"
+            android:text="산책 걸음 수 : "
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/insert_walk_step"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/insert_walk_meter"
+            android:layout_marginLeft="0dp"
+            android:layout_toRightOf="@id/title_step_count"
+            android:gravity="center"
+            tools:text="걸음 수 입력" />
+
+
+        <TextView
+            android:id="@+id/subheading_walk_memo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_step_count"
+            android:layout_marginTop="10dp"
+            android:text="메모"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/insert_walk_memo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/insert_walk_step"
+            android:layout_marginLeft="0dp"
+            android:layout_toRightOf="@id/subheading_walk_memo"
+            android:gravity="center"
+            tools:text="메모 입력" />
+
+        <TextView
+            android:id="@+id/subheading_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/insert_walk_memo"
+            android:text="산책 이미지"
+            android:textSize="20sp" />
+
+
+        <ImageView
+            android:id="@+id/walklog_photo"
+            android:layout_width="220dp"
+            android:layout_height="300dp"
+            android:layout_below="@id/subheading_image"
+            android:layout_marginTop="0dp"
+            android:src="@drawable/doggy"
+            android:layout_marginLeft="70dp"/>
+
+        <Button
+            android:id="@+id/btn_walk_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/walklog_photo"
+            android:backgroundTint="@color/colorAccent"
+            android:text="작성완료" />
+
+
+    </RelativeLayout>
+
+
+</ScrollView>

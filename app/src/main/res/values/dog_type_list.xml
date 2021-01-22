@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="dog_type">
+        <item>웰시코기</item>
+        <item>베도르만</item>
+        <item>치와와</item>
+        <item>푸들</item>
+        <item>시베리안허스키</item>
+        <item>말티즈</item>
+        <item>비글</item>
+        <item>닥스훈트</item>
+        <item>믹스</item>
+    </array>
+
+</resources>
