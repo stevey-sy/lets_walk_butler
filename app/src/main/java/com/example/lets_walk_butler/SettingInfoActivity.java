@@ -1,13 +1,13 @@
 package com.example.lets_walk_butler;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -27,10 +27,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
 import com.example.lets_walk_butler.adapter.CustomAdapter;
 import com.example.lets_walk_butler.setting_info.SettingItem;
 import com.gun0912.tedpermission.PermissionListener;
@@ -41,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class SettingInfoActivity extends AppCompatActivity {
@@ -56,6 +57,7 @@ public class SettingInfoActivity extends AppCompatActivity {
     String dogCategory = null;
     Uri uriPhoto = null;
     String category = null;
+    Bitmap bitmap;
     // 이미지를 저장할 파일
     private File tempFile;
 
@@ -90,14 +92,11 @@ public class SettingInfoActivity extends AppCompatActivity {
         registerForContextMenu(listView);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 SettingItem item = (SettingItem) parent.getItemAtPosition(position);
             }
         });
-
         getSharedPreferenceData ();
 
         // 추가 버튼을 눌렀을 때
@@ -365,111 +364,32 @@ public class SettingInfoActivity extends AppCompatActivity {
     }
 
     private void selectGalleryKitkat () {
-
-        if (Build.VERSION.SDK_INT < 19) {
-            cameraIntent = new Intent();
-            cameraIntent.setAction(Intent.ACTION_GET_CONTENT);
-            cameraIntent.setType("image/*");
-            startActivityForResult(cameraIntent, GET_GALLERY_VALUE);
-        } else {
-            cameraIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            cameraIntent.addCategory(Intent.CATEGORY_OPENABLE);
-            cameraIntent.setType("image/*");
-            startActivityForResult(cameraIntent, GET_GALLERY_VALUE);
-        }
-
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        // 고르고 나면, startActivityForResult 로 넘어간다.
+        startActivityForResult(intent, 1);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == GET_GALLERY_VALUE) {
-            if (resultCode == Activity.RESULT_OK) {
 
-                uriPhoto = data.getData();
-
-                if (uriPhoto != null) {
-                    Glide.with(this).load(uriPhoto.toString()).into(ivPhoto);
+        // 겔러리에서 선택된 이미지를 view 에 뿌려준다.
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                try {
+                    uriPhoto= data.getData();
+                    ivPhoto.setImageURI(uriPhoto);
+                    ImageDecoder.Source source = ImageDecoder.createSource(this.getContentResolver(), uriPhoto);
+                    bitmap = ImageDecoder.decodeBitmap(source);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                // do something here
             }
         }
     }
-
-//    private final int GALLERY_CODE = 1112;
-//    private void selectGallery() {
-//        // 그림을 가져오는 intent
-//
-//        Intent trial = new Intent(Intent.ACTION_GET_CONTENT, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//        trial.setType("image/*");
-//        startActivityForResult(trial, GALLERY_CODE);
-//
-////        Intent intent = new Intent (Intent.ACTION_GET_CONTENT);
-////        //intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-////        intent.setType("image/*");
-////        startActivityForResult(intent, GALLERY_CODE);
-//    }
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        // 이미지가 정상적으로 선택되었을 때
-//       if (GALLERY_CODE == 1112 && resultCode == RESULT_OK && data != null) {
-//
-//           uriPhoto = data.getData();
-//
-//
-//               //Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-//
-//               // 이미지뷰에 bitmap 설정
-//               //ivPhoto.setImageBitmap(bitmap);
-//
-//               //라이브러리 사용.
-//           if (uriPhoto != null) {
-//               Glide.with(this).load(uriPhoto.toString()).into(ivPhoto);
-//           }
-//
-//
-//       }
-//
-//    }
-
-    //    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (resultCode == RESULT_OK) {
-//            if (requestCode == GALLERY_CODE) {
-//                assert data != null;
-//                Uri photoUri = data.getData();
-//                Cursor cursor = null;;
-//
-//                try {
-//                    // Uri를 content:/// 에서 file:/// 로 변경함.
-//                    String [] project = {MediaStore.Images.Media.DATA};
-//
-//                    assert photoUri != null;
-//                    cursor = getContentResolver().query(photoUri, project, null, null, null);
-//
-//                    assert cursor != null;
-//                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-//
-//                    cursor.moveToFirst();
-//                    if (tempFile != null) {
-//                        tempFile = new File(cursor.getString(column_index));
-//                    }
-//
-//                } finally {
-//                    if (cursor != null) {
-//                        cursor.close();
-//                    }
-//                }
-//
-//                setImage();
-//
-//            }
-//        }
-//    }
 
     private void setImage() {
         ImageView imageView = findViewById(R.id.setting_image);
@@ -479,22 +399,6 @@ public class SettingInfoActivity extends AppCompatActivity {
 
         imageView.setImageBitmap(originalBm);
     }
-
-//    private void sendPicture(Uri imgUri) {
-//        String imagePath = getRealPathFromURI(imgUri);
-//        ExifInterface exif = null;
-//        try {
-//            exif = new ExifInterface(imagePath);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        assert exif != null;
-//        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-//        int exifDegree = exifOrientationToDegrees(exifOrientation);
-//
-//        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-//        ivProfile.setImageBitmap(rotate(bitmap, exifDegree));
-//    }
 
     private int exifOrientationToDegrees(int exifOrientation) {
         if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
