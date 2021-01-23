@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,8 +29,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.lets_walk_butler.adapter.CustomAdapter;
 import com.example.lets_walk_butler.setting_info.SettingItem;
@@ -51,6 +54,10 @@ public class SettingInfoActivity extends AppCompatActivity {
     CustomAdapter adapter = null;
     ArrayList<SettingItem> settingDataArrayList = new ArrayList<SettingItem>();
 
+    Toolbar toolbar;
+    ActionBar actionBar;
+    Menu action;
+
     String dogName = null;
     String strAge = null;
     String dogWeight = null;
@@ -70,6 +77,16 @@ public class SettingInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_info);
+
+        // 툴바 설정
+        toolbar = findViewById(R.id.toolbar_profile);
+        setSupportActionBar(toolbar);
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_left_arrow);
+
         // 사용자에게 카메라 사용 권한을 묻는다.
         askPermission();
         // 사용자로부터 사용가능한 카메라 기능을 할 수 있는 앱을 확인한다
@@ -375,7 +392,6 @@ public class SettingInfoActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         // 겔러리에서 선택된 이미지를 view 에 뿌려준다.
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
