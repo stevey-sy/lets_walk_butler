@@ -6,36 +6,55 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- //어플 이름 상단에 보이는 텍스트뷰-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="집사야, 산책 가즈아!"
+            android:textColor="#ffffff"
+            android:textSize="20sp"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
 
     <com.airbnb.lottie.LottieAnimationView
-        android:layout_marginTop="20dp"
         android:id="@+id/ani_sunny"
         android:layout_width="100dp"
         android:layout_height="90dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar_main" />
 
     <com.airbnb.lottie.LottieAnimationView
-        android:layout_marginTop="50dp"
         android:id="@+id/ani_information"
         android:layout_width="94dp"
         android:layout_height="81dp"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="40dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar_main" />
 
     <ImageView
         android:id="@+id/main_image"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginTop="104dp"
         android:src="@drawable/doggy"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/ani_sunny" />
 
     <Button
         android:id="@+id/btn_main_diary"
@@ -366,18 +385,15 @@
 <!--        tools:layout_editor_absoluteX="164dp"-->
 <!--        tools:layout_editor_absoluteY="298dp" />-->
 
-        <TextView
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="20dp"
+    <TextView
         android:id="@+id/tv_updated_time"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        tools:layout_editor_absoluteX="14dp"
-        tools:layout_editor_absoluteY="11dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="20dp"
+        android:text="업데이트된 시간"
+        android:textSize="10sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-            android:textSize="10sp"/>
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_main" />
 
     <TextView
         android:layout_marginLeft="20dp"
