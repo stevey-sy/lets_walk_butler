@@ -37,27 +37,31 @@
                     android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="이름: "
+                    android:text=" 이름: "
+                    android:drawableLeft="@drawable/ic_black_circle"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="나이: "
+                    android:text=" 나이: "
+                    android:drawableLeft="@drawable/ic_black_circle"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="무게: "
+                    android:text=" 무게: "
+                    android:drawableLeft="@drawable/ic_black_circle"
                     android:textColor="#000000"
                     android:textSize="16sp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="견종: "
+                    android:text=" 견종: "
+                    android:drawableLeft="@drawable/ic_black_circle"
                     android:textColor="#000000"
                     android:textSize="16sp" />
             </LinearLayout>
