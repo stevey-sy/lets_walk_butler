@@ -1,25 +1,21 @@
 package com.example.lets_walk_butler;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ListView;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TimePicker;
-import android.widget.EditText;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Calendar;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class MealActivity extends AppCompatActivity implements View.OnClickListener {
@@ -39,7 +35,6 @@ public class MealActivity extends AppCompatActivity implements View.OnClickListe
     Calendar user_calendar = Calendar.getInstance();
 
     DatePickerDialog.OnDateSetListener user_date_picker = new DatePickerDialog.OnDateSetListener () {
-
         public void onDateSet(DatePicker view, int year, int month, int day_of_month) {
             user_calendar.set(Calendar.YEAR, year);
             user_calendar.set(Calendar.MONTH, month);

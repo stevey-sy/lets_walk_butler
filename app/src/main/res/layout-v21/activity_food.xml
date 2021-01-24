@@ -4,114 +4,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FoodActivity"
-    android:orientation="vertical"
-    android:weightSum="10">
+    android:orientation="vertical">
 
-    <!--    <Spinner-->
-    <!--        android:id="@+id/category"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="40dp"-->
-    <!--        android:layout_toStartOf="@+id/register"-->
-    <!--        android:entries="@array/category"-->
-    <!--        android:layout_toLeftOf="@+id/register" />-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_food"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" >
 
-    <!--    <TextView-->
-    <!--        android:id="@+id/subheading_date"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="10dp"-->
-    <!--        android:text="사료명"-->
-    <!--        android:layout_marginLeft="10dp"-->
-    <!--        android:textSize="15sp"-->
-    <!--        android:layout_below="@+id/category" />-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="식사 LOG"
+            android:textSize="22sp"
+            android:textColor="#ffffff" />
 
-    <!--    <EditText-->
-    <!--        android:id="@+id/food_name"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_toLeftOf="@id/register"-->
-    <!--        android:layout_below="@id/category"-->
-    <!--        android:layout_toRightOf="@id/subheading_date"-->
-    <!--        android:gravity="center"-->
-    <!--        android:text=""-->
-    <!--        android:hint="사료명을 입력해주세요"-->
-    <!--        android:textSize="15sp" />-->
+    </androidx.appcompat.widget.Toolbar>
 
-    <!--    <TextView-->
-    <!--        android:id="@+id/subheading_food_time"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="20dp"-->
-    <!--        android:text="무게/수량"-->
-    <!--        android:layout_marginLeft="10dp"-->
-    <!--        android:textSize="15sp"-->
-    <!--        android:layout_below="@+id/subheading_date"-->
-    <!--        android:layout_toLeftOf="@id/food_weight"/>-->
-
-    <!--    <EditText-->
-    <!--        android:id="@+id/food_weight"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_toLeftOf="@id/type_category"-->
-    <!--        android:layout_below="@id/food_name"-->
-    <!--        android:layout_toRightOf="@id/subheading_date"-->
-    <!--        android:gravity="center"-->
-    <!--        android:text=""-->
-    <!--        android:textSize="15sp"-->
-    <!--        android:autofillHints="no"-->
-    <!--        android:hint="무게 / 개수"/>-->
-
-    <!--    <Spinner-->
-    <!--        android:id="@+id/type_category"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_toStartOf="@+id/register"-->
-    <!--        android:entries="@array/type_category"-->
-    <!--        android:layout_toLeftOf="@+id/register"-->
-    <!--        android:layout_below="@id/food_name"-->
-    <!--        android:layout_toRightOf="@id/food_weight"-->
-    <!--        android:layout_marginTop="4dp" />-->
-
-
-    <!--    <EditText-->
-    <!--        android:id="@+id/memo"-->
-    <!--        android:layout_marginTop="20dp"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_below="@+id/subheading_food_time"-->
-    <!--        android:layout_toStartOf="@+id/register"-->
-    <!--        android:backgroundTint="@color/colorPrimary"-->
-    <!--        tools:text=""-->
-    <!--        android:hint="메모를 입력해 주세요"-->
-    <!--        android:layout_toLeftOf="@+id/register" />-->
-
-    <!--    <Button-->
-    <!--        android:id="@+id/register"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_above="@+id/recyclerview"-->
-    <!--        android:layout_alignParentEnd="true"-->
-    <!--        android:layout_alignParentTop="true"-->
-    <!--        android:backgroundTint="@color/colorPrimary"-->
-    <!--        android:text="저장"-->
-    <!--        android:textColor="@android:color/white"-->
-    <!--        android:textSize="15sp"-->
-    <!--        android:textStyle="bold"-->
-    <!--        android:layout_alignParentRight="true" />-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/btn_meal_write"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorAccent"
-        android:text="일지 작성"
-        android:layout_weight="1"/>
+        android:text="일지 작성" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="5"/>
 
 
 

@@ -4,12 +4,18 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +28,10 @@ public class FoodActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<MealMemoItem> mArrayList;
     private MealListAdapter mAdapter = null;
 
+    Toolbar toolbar;
+    ActionBar actionBar;
+    Menu action;
+
     String foodName = null;
     String foodWeight = null;
     String memo = null;
@@ -32,11 +42,17 @@ public class FoodActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food);
-//        context = this;
-        // View를 세팅한 메서드 사용.
+
+        // 툴바 설정
+        toolbar = findViewById(R.id.toolbar_food);
+        setSupportActionBar(toolbar);
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_left_arrow);
 
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(FoodActivity.this);
@@ -116,6 +132,31 @@ public class FoodActivity extends AppCompatActivity implements View.OnClickListe
         });
 
     }
+
+    // 툴바 메뉴 불러오기
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.profile_menu, menu);
+        action = menu;
+        return true;
+    }
+    // 툴바 메뉴 클릭시 이벤트 (프로필 추가, 뒤로가기)
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.profile_add:
+                // 메뉴바에서 추가 버튼 눌렸을 때
+//                addProfile();
+                return true;
+            // 툴바 홈 버튼 눌렀을 때의 이벤트
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     // SharedPreference 에 저장된 문자열을 가져올 때 사용할 메서드
     public void getSharedPreferencesData() {
         SharedPreferences prefs = getSharedPreferences("MEAL_FILE", MODE_PRIVATE);
@@ -145,47 +186,4 @@ public class FoodActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 //        registerMemo();
     }
-
-    // 사용자가 작성을 마치면 키보드창이 사라지는 메서드
-//    private void hideKeyboard() {
-//        View view = this.getCurrentFocus();
-//        if (view != null) {
-//            InputMethodManager inputMethodManager =
-//                    (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//            assert inputMethodManager != null;
-//            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-//        }
-//    }
-
-//    public void saveSharedData () {
-//        SharedPreferences prefs = getSharedPreferences("MEAL_FILE", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = prefs.edit();
-//
-//        String json = prefs.getString("mealInfo", null);
-//
-//        try {
-//            if (json == null) {
-//                JSONArray jsonArray = new JSONArray();
-//                JSONObject jsonObject = new JSONObject();
-//                jsonObject.put("FoodName", foodName);
-//                jsonObject.put("FoodWeight", foodWeight );
-//                jsonObject.put("Memo", memo);
-//                jsonArray.put(jsonObject);
-//                editor.putString("mealInfo", jsonArray.toString());
-//            } else {
-//                JSONArray jsonArray= new JSONArray(json);
-//                JSONObject jsonObject = new JSONObject();
-//                jsonObject.put("FoodName", foodName);
-//                jsonObject.put("FoodWeight", foodWeight );
-//                jsonObject.put("Memo", memo);
-//                jsonArray.put(jsonObject);
-//                editor.putString("mealInfo", jsonArray.toString());
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        editor.apply();
-//    }
-
 }
