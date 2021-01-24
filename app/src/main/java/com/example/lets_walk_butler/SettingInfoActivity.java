@@ -34,6 +34,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 import com.example.lets_walk_butler.adapter.CustomAdapter;
 import com.example.lets_walk_butler.setting_info.SettingItem;
@@ -70,6 +71,7 @@ public class SettingInfoActivity extends AppCompatActivity {
     private File tempFile;
 
     public static final int GET_GALLERY_VALUE = 1002;
+    int PERMISSION_ID = 1001;
 
     Intent cameraIntent;
     ImageView ivPhoto;
@@ -90,6 +92,7 @@ public class SettingInfoActivity extends AppCompatActivity {
 
         // 사용자에게 카메라 사용 권한을 묻는다.
         askPermission();
+        requestPermissions();
         // 사용자로부터 사용가능한 카메라 기능을 할 수 있는 앱을 확인한다
         PackageManager packageManager = getPackageManager(); if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
         }
@@ -148,6 +151,33 @@ public class SettingInfoActivity extends AppCompatActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
+    // 사용자가 권한을 허가했는지 체크하는 메서드
+    private boolean checkPermissions(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            return true;
+        }
+        return false;
+    }
+    // 사용자에게 위치정보 권한을 요청하는 메서드
+    private void requestPermissions(){
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                PERMISSION_ID
+        );
+    }
+
+    // 사용자가 권한을 허가하거나 거절했을 때에 불러오는 메서드
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_ID) {
+            if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
+            }
+        }
+    }
+
     private void addProfile() {
         // 리스트 아이템 추가할 수 있는 다이어로그 생성
         AlertDialog.Builder builder = new AlertDialog.Builder(SettingInfoActivity.this);
@@ -163,6 +193,7 @@ public class SettingInfoActivity extends AppCompatActivity {
 
         // 사용자가 dialog 에서 이미지를 클릭했을 때의 작동
         ivPhoto.setOnClickListener(new View.OnClickListener(){
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
                 selectGalleryKitkat();
@@ -221,16 +252,17 @@ public class SettingInfoActivity extends AppCompatActivity {
             editAge.setText(settingDataArrayList.get(index).getDogAgeStr());
             editWeight.setText(settingDataArrayList.get(index).getDogWeight());
             editCategory.setText(settingDataArrayList.get(index).getDogCategory());
+            ivPhoto.setImageURI(settingDataArrayList.get(index).getIconUri());
+            uriPhoto = settingDataArrayList.get(index).getIconUri();
 
             // 사용자가 dialog 에서 이미지를 클릭했을 때의 작동
             ivPhoto.setOnClickListener(new View.OnClickListener(){
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                 @Override
                 public void onClick(View v) {
                     selectGalleryKitkat();
                 }
             });
-
-            ivPhoto.setImageURI(settingDataArrayList.get(index).getIconUri());
 
             final AlertDialog submitDialog = builder.create();
             btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -268,7 +300,7 @@ public class SettingInfoActivity extends AppCompatActivity {
                         dogInfoObject.put("DogWeight", dogWeight);
                         dogInfoObject.put("DogCategory", dogCategory);
                         dogInfoObject.put("DogUri", uriPhoto);
-                       // dogInfoObject.put("DogType", category);
+                        // dogInfoObject.put("DogType", category);
                         // 바꿔진 데이터를 다시 Json Array에 입력한다.
                         jsonArray.put(index, dogInfoObject);
                         // 다시 SharedPreference 에 저장한다.
@@ -317,57 +349,6 @@ public class SettingInfoActivity extends AppCompatActivity {
             Log.d("리스트뷰 아이템", "삭제");
             Toast.makeText(this, "항목이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
         }
-//        else if (itemId == R.id.select_main) {
-//            // 강아지 정보 버튼 눌렀을 때의 작동
-//
-//            AlertDialog.Builder builder = new AlertDialog.Builder(SettingInfoActivity.this);
-//            View view = LayoutInflater.from(SettingInfoActivity.this).inflate(R.layout.dialog_info, null, false);
-//            builder.setView(view);
-//
-//            final Button btnQuit = (Button) view.findViewById(R.id.btn_setting_complete);
-//            final TextView tvFoodTip = (TextView) view.findViewById(R.id.tv_food_recommend);
-//            final TextView tvWalkTip = (TextView) view.findViewById(R.id.tv_walk_recommend);
-//
-//            if (dogWeight != null) {
-//                String strMinimumFood;
-//                String strMaximumFood;
-//
-//                double minimumFood;
-//                double maximumFood;
-//
-//                double weight = Double.parseDouble(dogWeight);
-//                minimumFood = weight * 0.05;
-//                maximumFood = weight * 0.08;
-//
-//                strMinimumFood = Double.toString(minimumFood);
-//                strMaximumFood = Double.toString(maximumFood);
-//
-//                tvFoodTip.setText("강아지 사료 기준으로 하루에 최소 " + strMinimumFood +"g ~ 최대 "+strMaximumFood+"g 의 식사량을 권장합니다." );
-//
-//            }
-//
-//            if (dogCategory != null) {
-//
-//                if (dogCategory.equals("말티즈") || dogCategory.equals("푸들") || dogCategory.equals("치와와")) {
-//
-//                    tvWalkTip.setText("아침, 저녁으로 2회가량 20~30분 정도의 산책을 권장합니다.");
-//                } else if (dogCategory.equals("리트리버") || dogCategory.equals("시바") || dogCategory.equals("비글")) {
-//                    tvWalkTip.setText("산책은 하루에 적어도 한번 이상, 기본적으로 2~3시간의 산책을 권장합니다.");
-//                }
-//
-//            }
-//
-//            final AlertDialog infoDialog = builder.create();
-//            btnQuit.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    infoDialog.dismiss();
-//                }
-//
-//                });
-//            infoDialog.show();
-
-//        }
         return true;
     }
 
@@ -397,6 +378,7 @@ public class SettingInfoActivity extends AppCompatActivity {
                 .check();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void selectGalleryKitkat () {
         Intent intent = new Intent();
         intent.setType("image/*");
