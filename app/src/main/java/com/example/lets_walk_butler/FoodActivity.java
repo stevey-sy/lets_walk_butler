@@ -8,8 +8,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -21,12 +25,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lets_walk_butler.adapter.MealListAdapter;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class FoodActivity extends AppCompatActivity implements View.OnClickListener{
 
+    // 식사 일지를 저장할 array list
     private ArrayList<MealMemoItem> mArrayList;
     private MealListAdapter mAdapter = null;
+    // 저장되어 있는 강아지 이름 리스트를 담을 array list
+    private ArrayList<String> nameList;
+    private ArrayAdapter<String> namesAdapter;
 
     Toolbar toolbar;
     ActionBar actionBar;
@@ -54,32 +66,48 @@ public class FoodActivity extends AppCompatActivity implements View.OnClickListe
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_left_arrow);
 
+//        MealMemoItem data = new MealMemoItem("로얄사료", "120", "잘 먹는다.");
+//        mArrayList.add(data);
+        // SharedPreference 에 저장되어 있는 식사 데이터를 로딩
+        getSharedPreferencesData();
+
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(FoodActivity.this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
+        // 식사 내용을 저장할 array list 생성
         mArrayList = new ArrayList<>();
-
-        mAdapter = new MealListAdapter(this, mArrayList);
+        mAdapter = new MealListAdapter(getApplicationContext(), mArrayList);
         mRecyclerView.setAdapter(mAdapter);
-
-//        MealMemoItem data = new MealMemoItem("로얄사료", "120", "잘 먹는다.");
-//        mArrayList.add(data);
-        // SharedPreference 에 저장되어 있는 데이터를 로딩
-        getSharedPreferencesData();
 
         // 추가 버튼 눌렀을 때
         Button buttonInsert = (Button)findViewById(R.id.btn_meal_write);
         buttonInsert.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-
-                // 다이어로그를 생성하여 사용자가 아이템 추가 입력 가능
+                // 식사할 강아지의 이름 선택을 위해 프로필 데이터 조회
+                checkProfiles();
                 AlertDialog.Builder builder = new AlertDialog.Builder(FoodActivity.this);
                 View view = LayoutInflater.from(FoodActivity.this).inflate(R.layout.dialog_edit_meal, null, false);
                 builder.setView(view);
 
+                final Spinner nameSpinner = (Spinner) view.findViewById(R.id.spinner_dog_name);
+                nameSpinner.setAdapter(namesAdapter);
+                nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        String guideMessage = "강아지를 선택해주세요";
+                        if(!nameList.get(i).contains(guideMessage)) {
+                            Toast.makeText(getApplicationContext(),nameList.get(i)+"가 선택되었습니다.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+                        Log.d("Name List ", "비어 있음");
+                    }
+                });
                 final Button ButtonSubmit = (Button) view.findViewById(R.id.register);
                 final EditText editName = (EditText) view.findViewById(R.id.food_name);
                 final EditText editWeight = (EditText) view.findViewById(R.id.food_weight);
@@ -126,11 +154,44 @@ public class FoodActivity extends AppCompatActivity implements View.OnClickListe
                         dialog.dismiss();
                     }
                 });
-
                 dialog.show();
             }
         });
+    }
 
+    private void checkProfiles() {
+        // 강아지의 이름들을 담을 array list 생성
+        nameList = new ArrayList<>();
+        // Shared Preferences 에서 강아지 프로필 조회
+        // 강아지 이름을 array list 에 추가
+        getPuppyNames(nameList);
+        // 이름 데이터가 들어가 있는 array list 를
+        // Spinner 에 사용하기 위해 Array Adapter 적용
+        namesAdapter = new ArrayAdapter<>(getApplicationContext(),
+                android.R.layout.simple_spinner_dropdown_item, nameList);
+    }
+
+    private void getPuppyNames(ArrayList<String> nameList) {
+        nameList.add("강아지를 선택해주세요");
+        SharedPreferences prefs = getSharedPreferences("DOG_FILE", MODE_PRIVATE);
+        // 쉐어드에 저장한 문자열을 불러온다.
+        String json = prefs.getString("dogInfo", null);
+        //만약 sharedpreference에 저장된 값이 null이 아니라면,
+        if (json != null) {
+            try {
+                JSONArray jsonArray = new JSONArray(json);
+                // Json Array에 저장되어 있던 데이터를 읽어온다.
+                for (int i=0; i< jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String dogName = jsonObject.getString("DogName");
+                    // 읽어온 데이터를 사용자가 볼 수 있도록 출력한다.
+                    nameList.add(dogName);
+                    Log.d("강아지 이름 ", dogName);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     // 툴바 메뉴 불러오기
