@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -115,83 +116,99 @@ public class SettingInfoActivity extends AppCompatActivity {
             }
         });
         getSharedPreferenceData ();
-
-        // 추가 버튼을 눌렀을 때
-        Button addButton = (Button)findViewById(R.id.btn_add);
-        addButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-
-                // 리스트 아이템 추가할 수 있는 다이어로그 생성
-                AlertDialog.Builder builder = new AlertDialog.Builder(SettingInfoActivity.this);
-                View view = LayoutInflater.from(SettingInfoActivity.this).inflate(R.layout.dialog_setting_info, null, false);
-                builder.setView(view);
-                // 다이어로그 구성요소들 레이아웃 연결.
-                final Button BtnSubmit = (Button) view.findViewById(R.id.btn_setting_complete);
-                final EditText editName = (EditText) view.findViewById(R.id.edit_name);
-                final EditText editAge = (EditText) view.findViewById(R.id.edit_dog_age);
-                final EditText editWeight = (EditText)view.findViewById(R.id.edit_dog_weight);
-                final EditText editCategory = (EditText)view.findViewById(R.id.setting_category);
-                ivPhoto = (ImageView)view.findViewById(R.id.setting_image);
-
-                // 사용자가 dialog 에서 이미지를 클릭했을 때의 작동
-                ivPhoto.setOnClickListener(new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v) {
-                        selectGalleryKitkat();
-                    }
-                });
-
-                final AlertDialog dialog = builder.create();
-
-                // 작성 완료버튼 눌렀을 떄
-                BtnSubmit.setOnClickListener(new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v) {
-                        dogName = editName.getText().toString();
-                        strAge = editAge.getText().toString();
-                        dogWeight = editWeight.getText().toString();
-                        dogCategory = editCategory.getText().toString();
-//                        dogProfile = editProfile.get().toString();
-
-                        SettingItem item = new SettingItem (dogName, strAge, dogWeight, dogCategory, uriPhoto);
-                        settingDataArrayList.add(item);
-
-                        // SharedPreference 에 데이터를 저장하는 메서드
-                        saveSettingData();
-                        // 어뎁터에 데이터 변경을 갱신시킴.
-                        adapter.notifyDataSetChanged();
-                        dialog.dismiss();
-                        Log.d("리스트뷰 아이템", "추가");
-                    }
-                });
-
-                dialog.show();
-            }
-        });
+    }
+    // 툴바 메뉴 불러오기
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.profile_menu, menu);
+        action = menu;
+        return true;
+    }
+    // 툴바 메뉴 클릭시 이벤트 (프로필 추가, 뒤로가기)
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.profile_add:
+                // 메뉴바에서 추가 버튼 눌렸을 때
+                addProfile();
+                return true;
+            // 툴바 홈 버튼 눌렀을 때의 이벤트
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
     // 사용자가 리스트의 아이템을 클릭했을 때 컨텍스트 메뉴가 작동되도록 레이아웃을 연결 시킴.
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo ) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.setting_context_menu, menu);
-
         super.onCreateContextMenu(menu, v, menuInfo);
     }
+
+    private void addProfile() {
+        // 리스트 아이템 추가할 수 있는 다이어로그 생성
+        AlertDialog.Builder builder = new AlertDialog.Builder(SettingInfoActivity.this);
+        View view = LayoutInflater.from(SettingInfoActivity.this).inflate(R.layout.dialog_setting_info, null, false);
+        builder.setView(view);
+        // 다이어로그 구성요소들 레이아웃 연결.
+        final Button BtnSubmit = (Button) view.findViewById(R.id.btn_setting_complete);
+        final EditText editName = (EditText) view.findViewById(R.id.edit_name);
+        final EditText editAge = (EditText) view.findViewById(R.id.edit_dog_age);
+        final EditText editWeight = (EditText)view.findViewById(R.id.edit_dog_weight);
+        final EditText editCategory = (EditText)view.findViewById(R.id.setting_category);
+        ivPhoto = (ImageView)view.findViewById(R.id.setting_image);
+
+        // 사용자가 dialog 에서 이미지를 클릭했을 때의 작동
+        ivPhoto.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                selectGalleryKitkat();
+            }
+        });
+
+        final AlertDialog dialog = builder.create();
+
+        // 작성 완료버튼 눌렀을 떄
+        BtnSubmit.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                dogName = editName.getText().toString();
+                strAge = editAge.getText().toString();
+                dogWeight = editWeight.getText().toString();
+                dogCategory = editCategory.getText().toString();
+//                        dogProfile = editProfile.get().toString();
+
+                SettingItem item = new SettingItem (dogName, strAge, dogWeight, dogCategory, uriPhoto);
+                settingDataArrayList.add(item);
+
+                // SharedPreference 에 데이터를 저장하는 메서드
+                saveSettingData();
+                // 어뎁터에 데이터 변경을 갱신시킴.
+                adapter.notifyDataSetChanged();
+                dialog.dismiss();
+                Log.d("리스트뷰 아이템", "추가");
+            }
+        });
+
+        dialog.show();
+    }
+
     // 컨텍스트 메뉴가 선택되었을 때의 작동.
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         // 사용자가 선택한 리스트 아이템의 위치를 알려줄 변수.
         final int index = info.position;
-
         int itemId = item.getItemId();
         //사용자가 수정버튼 클릭했을 때,
         if (itemId == R.id.modify) {
-
             AlertDialog.Builder builder = new AlertDialog.Builder(SettingInfoActivity.this);
             View view = LayoutInflater.from(SettingInfoActivity.this).inflate(R.layout.dialog_setting_info, null, false);
             builder.setView(view);
-
+            // Dialog xml 연결
             final Button btnSubmit = (Button) view.findViewById(R.id.btn_setting_complete);
             final EditText editName = (EditText) view.findViewById(R.id.edit_name);
             final EditText editAge = (EditText) view.findViewById(R.id.edit_dog_age);
@@ -199,11 +216,12 @@ public class SettingInfoActivity extends AppCompatActivity {
             final EditText editCategory = (EditText)view.findViewById(R.id.setting_category);
             ivPhoto = (ImageView)view.findViewById(R.id.setting_image);
 
-            // 사용자가 입력한 데이터가 좌표를 따라서 세팅된다.
+            // 프로필 게시글 번호를 Array List 의 index 로 인식하여 데이터를 view 에 입힌다.
             editName.setText(settingDataArrayList.get(index).getDogNameStr());
             editAge.setText(settingDataArrayList.get(index).getDogAgeStr());
             editWeight.setText(settingDataArrayList.get(index).getDogWeight());
             editCategory.setText(settingDataArrayList.get(index).getDogCategory());
+
             // 사용자가 dialog 에서 이미지를 클릭했을 때의 작동
             ivPhoto.setOnClickListener(new View.OnClickListener(){
                 @Override
@@ -213,7 +231,6 @@ public class SettingInfoActivity extends AppCompatActivity {
             });
 
             ivPhoto.setImageURI(settingDataArrayList.get(index).getIconUri());
-
 
             final AlertDialog submitDialog = builder.create();
             btnSubmit.setOnClickListener(new View.OnClickListener() {
