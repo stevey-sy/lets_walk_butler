@@ -2,6 +2,7 @@
 <resources>
 
     <array name="category">
+        <item>식사 카테고리</item>
         <item>식사</item>
         <item>간식</item>
         <item>기타</item>
