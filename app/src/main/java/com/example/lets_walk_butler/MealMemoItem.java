@@ -1,35 +1,44 @@
 package com.example.lets_walk_butler;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 public class MealMemoItem {
 
     private String category;
     private String memo;
+    private String petName;
     // private String regDate;
     private String type_category;
     private String food_name;
     private String food_weight;
+    private String mealDate;
+    private String mealType;
 
 
-    public MealMemoItem(String food_name, String food_weight, String memo) {
+    public MealMemoItem(String meal_date, String pet_name, String meal_type, String food_name, String food_weight, String memo) {
 //        SimpleDateFormat formatter =
 //                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
 //        Date date = new Date();
 
 //        this.category = category;
+        this.petName = pet_name;
         this.memo = memo;
+        this.mealDate = meal_date;
+        this.mealType = meal_type;
 //        this.regDate = formatter.format(date);
 //        this.type_category = type_category;
         this.food_name = food_name;
         this.food_weight = food_weight;
     }
 
-//    public String getRegDate() {
-//        return regDate;
-//    }
+    public String getMealType() {
+        return mealType;
+    }
+    public String getMealDate() {
+        return mealDate;
+    }
+
+    public String getPetName() {
+        return petName;
+    }
 
     public String getCategory() {
         return category;

@@ -1,88 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    card_view:cardCornerRadius="10dp"
+    card_view:cardUseCompatPadding="true"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_margin="4dp">
 
         <TextView
-            android:id="@+id/category"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorAccent"
-            android:textSize="20sp"
-            tools:text="식사"
-            android:text="식사"/>
-
-        <TextView
-            android:id="@+id/input_food_name"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            tools:text="사료명"
-            android:layout_below="@id/category"/>
-
-        <TextView
-            android:id="@+id/input_food_weight"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            tools:text="무게"
-            android:layout_below="@id/category"
-            android:layout_toRightOf="@id/input_food_name"
-            android:gravity="center"/>
-
-        <TextView
-            android:id="@+id/title_gram"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="g"
-            android:layout_toRightOf="@id/input_food_weight"
-            android:layout_below="@id/category" />
-
-        <TextView
-            android:id="@+id/input_weight_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="단위"
-            android:layout_below="@id/category"
-            android:layout_toRightOf="@id/title_gram"/>
-
-        <TextView
-            android:layout_marginTop="5dp"
-            android:id="@+id/subheading_memo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/input_food_name"
-            android:text="메모: " />
-
-        <TextView
-            android:layout_marginLeft="10dp"
-            android:id="@+id/show_memo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/input_food_name"
-            android:layout_margin="4dp"
-            android:textColor="@android:color/black"
-            android:textSize="15sp"
-            tools:text="메모"
-            android:layout_toRightOf="@id/subheading_memo"
-            android:text="메모"/>
-
-        <TextView
             android:id="@+id/show_regdate"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/memo"
-            android:layout_marginRight="20dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:text="2020 / 06 / 05"
-            android:textSize="15sp" />
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:gravity="right"/>
 
-    </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:gravity="center"
+                android:background="#000000">
+
+                <ImageView
+                    android:id="@+id/meal_image"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:srcCompat="@drawable/ic_dog_food_white"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp">
+
+                <TextView
+                    android:id="@+id/category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:text="식사"/>
+
+                <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" - 누가?"
+                    android:textColor="@android:color/black"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tv_pet_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="먹은 강아지" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+            </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" - 무엇을?"
+                        android:textColor="@android:color/black"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/input_food_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="먹은 음식 이름" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" - 얼만큼?"
+                        android:textColor="@android:color/black"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/input_food_weight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="먹은 양" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" - 특이사항"
+                        android:textColor="@android:color/black"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/show_memo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="메모 자리" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

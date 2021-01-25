@@ -11,14 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.lets_walk_butler.FoodActivity;
 import com.example.lets_walk_butler.MealMemoItem;
 import com.example.lets_walk_butler.R;
 
@@ -57,17 +56,25 @@ public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHo
         return viewHolder;
     }
 
-
     // 각 아이템의 위치와 데이터를 보관할 holder
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
+        viewHolder.tvMealType.setText(mList.get(position).getMealType());
+        // 식사 종류 마다 다른 아이콘 출력
+        String mealType = mList.get(position).getMealType();
+        if(mealType.equals("식사")) {
+            viewHolder.mealImage.setImageResource(R.drawable.ic_dog_food_white);
+        } else if (mealType.equals("간식")) {
+            viewHolder.mealImage.setImageResource(R.drawable.ic_bone_white);
+        } else if (mealType.equals("약")) {
+            viewHolder.mealImage.setImageResource(R.drawable.ic_pill_white);
+        }
 
-        //viewHolder.categoryText.setText(mList.get(position).getCategory());
+        viewHolder.tvMealDate.setText(mList.get(position).getMealDate());
+        viewHolder.tvPetName.setText(mList.get(position).getPetName());
         viewHolder.memoText.setText(mList.get(position).getMemo());
-//        viewHolder.dateText.setText(mList.get(position).getRegDate());
         viewHolder.food_name_text.setText(mList.get(position).getFood_name());
         viewHolder.weight_text.setText(mList.get(position).getFood_weight());
-        //viewHolder.type_category_text.setText(mList.get(position).getType_category());
     }
 
     @Override
@@ -78,12 +85,12 @@ public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
         //TextView categoryText;
         protected TextView memoText;
-        protected TextView dateText;
+        TextView tvMealDate;
+        TextView tvPetName;
+        TextView tvMealType;
+        ImageView mealImage;
 
         SharedPreferences prefs;
-        String strFoodName;
-        String strFoodWeight;
-        String strFoodMemo;
         String strDataSet;
         StringBuilder stringBuilder = new StringBuilder();
         String[] array;
@@ -95,17 +102,14 @@ public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHo
 
         public ViewHolder(View itemView) {
             super(itemView);
-
-            //categoryText = itemView.findViewById(R.id.category);
+            this.mealImage = itemView.findViewById(R.id.meal_image);
+            this.tvMealType = itemView.findViewById(R.id.category);
+            this.tvMealDate = itemView.findViewById(R.id.show_regdate);
             this.memoText = itemView.findViewById(R.id.show_memo);
-            //this.dateText = itemView.findViewById(R.id.show_regdate);
-
+            this.tvPetName = itemView.findViewById(R.id.tv_pet_name);
             this.food_name_text = itemView.findViewById(R.id.input_food_name);
             this.weight_text = itemView.findViewById(R.id.input_food_weight);
-            //type_category_text = itemView.findViewById(R.id.input_weight_type);
-
             itemView.setOnCreateContextMenuListener(this);
-
         }
         // 사용자가 아이템을 길게 클릭했을 때에 메뉴 생성
         @Override
@@ -129,16 +133,12 @@ public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHo
                         builder.setView(view);
 
                         final Button ButtonSubmit = (Button) view.findViewById(R.id.register);
-                        // final EditText edit_meal_type = (EditText) view.findViewById(R.id.dialog_meal_type);
                         final EditText edit_name = (EditText) view.findViewById(R.id.food_name);
                         final EditText edit_weight = (EditText) view.findViewById(R.id.food_weight);
-                        //final EditText edit_weight_type = (EditText) view.findViewById(R.id.dialog_weight_type);
                         final EditText edit_memo = (EditText) view.findViewById(R.id.memo);
 
-                        //edit_meal_type.setText(m_list.get(getAdapterPosition()).getCategory());
                         edit_name.setText(mList.get(getAdapterPosition()).getFood_name());
                         edit_weight.setText(mList.get(getAdapterPosition()).getFood_weight());
-                        //edit_weight_type.setText(m_list.get(getAdapterPosition()).getType_category());
                         edit_memo.setText(mList.get(getAdapterPosition()).getMemo());
 
                         final AlertDialog dialog = builder.create();
@@ -157,32 +157,32 @@ public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHo
 
                             @Override
                             public void onClick(View v) {
-                                //String meal_type = edit_meal_type.getText().toString();
-                                String mealName = edit_name.getText().toString();
-                                String mealWeight = edit_weight.getText().toString();
-                                //String meal_weight_type = edit_weight_type.getText().toString();
-                                String mealMemo = edit_memo.getText().toString();
-
-                                MealMemoItem edit_list = new MealMemoItem(mealName, mealWeight, mealMemo);
-                                mList.set(getAdapterPosition(), edit_list);
-                                notifyItemChanged(getAdapterPosition());
-
-                                // 수정하려는 부분에 문자열 배치 (문자열 자리를 하나씩 추가로 생성)
-                                int position = getAdapterPosition();
-                                String editFoodName = array[position*2];
-                                String editWeight = array[(position*2) +1];
-                                String editMemo = array[(position*2) +2];
-                                // 전에 배치되었던 문자열 데이터를 하나의 변수로 합친다.
-                                String oldText = editFoodName+","+editWeight+","+editMemo+",";
-                                // 교체될 문자열을 하나로 합친다.
-                                String newText = mealName+","+mealWeight+","+mealMemo+",";
-                                // 문자열 데이터 교체
-                                String editText = strDataSet.replace(oldText,newText);
-                                // 쉐어드에 세팅한다.
-                                SharedPreferences.Editor editor = prefs.edit();
-                                editor.putString("mealLog", editText);
-                                editor.apply();
-                                dialog.dismiss();
+//                                //String meal_type = edit_meal_type.getText().toString();
+//                                String mealName = edit_name.getText().toString();
+//                                String mealWeight = edit_weight.getText().toString();
+//                                //String meal_weight_type = edit_weight_type.getText().toString();
+//                                String mealMemo = edit_memo.getText().toString();
+//
+//                                MealMemoItem edit_list = new MealMemoItem(petName, mealName, mealWeight, mealMemo);
+//                                mList.set(getAdapterPosition(), edit_list);
+//                                notifyItemChanged(getAdapterPosition());
+//
+//                                // 수정하려는 부분에 문자열 배치 (문자열 자리를 하나씩 추가로 생성)
+//                                int position = getAdapterPosition();
+//                                String editFoodName = array[position*2];
+//                                String editWeight = array[(position*2) +1];
+//                                String editMemo = array[(position*2) +2];
+//                                // 전에 배치되었던 문자열 데이터를 하나의 변수로 합친다.
+//                                String oldText = editFoodName+","+editWeight+","+editMemo+",";
+//                                // 교체될 문자열을 하나로 합친다.
+//                                String newText = mealName+","+mealWeight+","+mealMemo+",";
+//                                // 문자열 데이터 교체
+//                                String editText = strDataSet.replace(oldText,newText);
+//                                // 쉐어드에 세팅한다.
+//                                SharedPreferences.Editor editor = prefs.edit();
+//                                editor.putString("mealLog", editText);
+//                                editor.apply();
+//                                dialog.dismiss();
                             }
                         });
 

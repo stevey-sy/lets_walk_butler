@@ -1,5 +1,7 @@
 package com.example.lets_walk_butler;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -29,9 +32,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
-public class FoodActivity extends AppCompatActivity implements View.OnClickListener{
+public class FoodActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     // 식사 일지를 저장할 array list
     private ArrayList<MealMemoItem> mArrayList;
@@ -39,6 +45,12 @@ public class FoodActivity extends AppCompatActivity implements View.OnClickListe
     // 저장되어 있는 강아지 이름 리스트를 담을 array list
     private ArrayList<String> nameList;
     private ArrayAdapter<String> namesAdapter;
+    // 식사량 측정 단위가 들어갈 array list
+    private ArrayList<String> weightList;
+    private ArrayAdapter<String> weightAdapter;
+    // 식사 타입 리스트
+    private ArrayList<String> mealTypeList;
+    private ArrayAdapter<String> mealTypeAdapter;
 
     Toolbar toolbar;
     ActionBar actionBar;
@@ -47,7 +59,10 @@ public class FoodActivity extends AppCompatActivity implements View.OnClickListe
     String foodName = null;
     String foodWeight = null;
     String memo = null;
-    StringBuilder stringBuilder = new StringBuilder();
+    String petName = null;
+    String measureType = null;
+    String mealDate = null;
+    String mealType = null;
     String[] array;
     // 음식이름, 음식무게, 메모 문자열 자료가 합쳐질 변수
     String strDataSet = "";
@@ -69,7 +84,6 @@ public class FoodActivity extends AppCompatActivity implements View.OnClickListe
 //        MealMemoItem data = new MealMemoItem("로얄사료", "120", "잘 먹는다.");
 //        mArrayList.add(data);
         // SharedPreference 에 저장되어 있는 식사 데이터를 로딩
-        getSharedPreferencesData();
 
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(FoodActivity.this);
@@ -80,83 +94,6 @@ public class FoodActivity extends AppCompatActivity implements View.OnClickListe
         mAdapter = new MealListAdapter(getApplicationContext(), mArrayList);
         mRecyclerView.setAdapter(mAdapter);
 
-        // 추가 버튼 눌렀을 때
-        Button buttonInsert = (Button)findViewById(R.id.btn_meal_write);
-        buttonInsert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 식사할 강아지의 이름 선택을 위해 프로필 데이터 조회
-                checkProfiles();
-                AlertDialog.Builder builder = new AlertDialog.Builder(FoodActivity.this);
-                View view = LayoutInflater.from(FoodActivity.this).inflate(R.layout.dialog_edit_meal, null, false);
-                builder.setView(view);
-
-                final Spinner nameSpinner = (Spinner) view.findViewById(R.id.spinner_dog_name);
-                nameSpinner.setAdapter(namesAdapter);
-                nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        String guideMessage = "강아지를 선택해주세요";
-                        if(!nameList.get(i).contains(guideMessage)) {
-                            Toast.makeText(getApplicationContext(),nameList.get(i)+"가 선택되었습니다.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        Log.d("Name List ", "비어 있음");
-                    }
-                });
-                final Button ButtonSubmit = (Button) view.findViewById(R.id.register);
-                final EditText editName = (EditText) view.findViewById(R.id.food_name);
-                final EditText editWeight = (EditText) view.findViewById(R.id.food_weight);
-                final EditText editMemo = (EditText) view.findViewById(R.id.memo);
-
-                ButtonSubmit.setText("작성 완료");
-
-                final AlertDialog dialog = builder.create();
-
-                ButtonSubmit.setOnClickListener(new View.OnClickListener(){
-
-                    @Override
-                    public void onClick(View v) {
-                        // 사용자가 입력한 내용을 가져옴
-                        foodName = editName.getText().toString();
-                        foodWeight = editWeight.getText().toString();
-                        memo = editMemo.getText().toString();
-
-                        // 가져온 내용을 ArrayList에 추가
-                        MealMemoItem mealData = new MealMemoItem(foodName, foodWeight, memo);
-                        mArrayList.add(0, mealData);
-
-                        // StringBuilder 에 사용자가 입력한 여러 문자열들을 한 문자열 변수에 모두 모은다.
-                        stringBuilder.append(foodName + ",");
-                        stringBuilder.append(foodWeight + ",");
-                        stringBuilder.append(memo + ",");
-                        strDataSet = strDataSet + stringBuilder.toString();
-                        Log.d("stringBuilder 작동", strDataSet);
-                        // split 함수 사용
-                        array = strDataSet.split(",");
-                        // 합쳐진 문자열을 String array 에 나열
-                        for(String box : array) {
-                            System.out.println(box);
-                        }
-                        // SharedPreference 을 생성하여 작성한 문자열을 저장.
-                        SharedPreferences prefs = getSharedPreferences("MEAL_FILE", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = prefs.edit();
-
-                        editor.putString("mealLog", strDataSet);
-                        editor.apply();
-
-                        mAdapter.notifyItemInserted(0);
-                        mAdapter.notifyDataSetChanged();
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
-            }
-        });
     }
 
     private void checkProfiles() {
@@ -208,7 +145,7 @@ public class FoodActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()) {
             case R.id.profile_add:
                 // 메뉴바에서 추가 버튼 눌렸을 때
-//                addProfile();
+                addMealLog();
                 return true;
             // 툴바 홈 버튼 눌렀을 때의 이벤트
             case android.R.id.home:
@@ -218,33 +155,220 @@ public class FoodActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
+    private void addMealLog() {
+        // 식사할 강아지의 이름 선택을 위해 프로필 데이터 조회
+        checkProfiles();
+        AlertDialog.Builder builder = new AlertDialog.Builder(FoodActivity.this);
+        View view = LayoutInflater.from(FoodActivity.this).inflate(R.layout.dialog_edit_meal, null, false);
+        builder.setView(view);
+
+        // 날짜 선택
+        final EditText datePicker = (EditText) view.findViewById(R.id.tv_meal_date);
+        // 오늘 날짜를 미리 edit text 에 세팅해 놓는다.
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat dateFormat = new SimpleDateFormat ("yyyy/MM/dd");
+        Date todayDate = new Date();
+        String date = dateFormat.format(todayDate);
+        datePicker.setText(date);
+        datePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePickerDialog();
+                datePicker.setText(mealDate);
+            }
+        });
+
+        // 강아지 이름 선택
+        final Spinner nameSpinner = (Spinner) view.findViewById(R.id.spinner_dog_name);
+        nameSpinner.setAdapter(namesAdapter);
+        nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String guideMessage = "강아지를 선택해주세요";
+                if(!nameList.get(i).contains(guideMessage)) {
+                    Toast.makeText(getApplicationContext(),nameList.get(i)+"가 선택되었습니다.",
+                            Toast.LENGTH_SHORT).show();
+                    // 저장할 강아지 이름 세팅
+                    petName = nameList.get(i);
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Log.d("Name List ", "비어 있음");
+            }
+        });
+
+        // 식사 카테고리 리스트 (식사, 간식, 약, 기타)
+        mealTypeList = new ArrayList<>();
+        mealTypeList.add("식사 카테고리");
+        mealTypeList.add("식사");
+        mealTypeList.add("간식");
+        mealTypeList.add("약");
+        // Spinner 에 사용하기 위해 Array Adapter 적용
+        mealTypeAdapter = new ArrayAdapter<>(getApplicationContext(),
+                android.R.layout.simple_spinner_dropdown_item, mealTypeList);
+
+        // 먹은 음식의 수량 or 무게를 저장할 단위를 선정하는 spinner
+        final Spinner mealTypeSpinner = (Spinner) view.findViewById(R.id.meal_category);
+        mealTypeSpinner.setAdapter(mealTypeAdapter);
+        mealTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // spinner 에서 선택한 측정 단위를 변수에 담는다.
+                mealType = mealTypeList.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Log.d("Weight List ", "비어 있음");
+            }
+        });
+
+
+        // 식사량 측정 단위 array list 생성
+        weightList = new ArrayList<>();
+        weightList.add("g");
+        weightList.add("개");
+        weightList.add("ml");
+        // Spinner 에 사용하기 위해 Array Adapter 적용
+        weightAdapter = new ArrayAdapter<>(getApplicationContext(),
+                android.R.layout.simple_spinner_dropdown_item, weightList);
+
+        // 먹은 음식의 수량 or 무게를 저장할 단위를 선정하는 spinner
+        final Spinner weightSpinner = (Spinner) view.findViewById(R.id.spinner_weight_type);
+        weightSpinner.setAdapter(weightAdapter);
+        weightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // spinner 에서 선택한 측정 단위를 변수에 담는다.
+                measureType = weightList.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Log.d("Weight List ", "비어 있음");
+            }
+        });
+
+        // Dialog 의 view 와 연결
+        final Button ButtonSubmit = (Button) view.findViewById(R.id.register);
+        final EditText editName = (EditText) view.findViewById(R.id.food_name);
+        final EditText editWeight = (EditText) view.findViewById(R.id.food_weight);
+        final EditText editMemo = (EditText) view.findViewById(R.id.memo);
+
+        ButtonSubmit.setText("작성 완료");
+        final AlertDialog dialog = builder.create();
+
+        // 작성 완료 버튼이 눌렸을 때의 이벤트
+        ButtonSubmit.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                // 사용자가 입력한 내용을 가져옴
+                // 식사일
+                String date = datePicker.getText().toString();
+                // 음식 이름
+                foodName = editName.getText().toString();
+                // 식사 종류
+                String inserted_meal_type = mealType;
+                // 사용자가 입력한 음식의 무게 or 개수,
+                String inserted_weight = editWeight.getText().toString();
+                // spinner 에 적용된 단위를 합친다
+                foodWeight = inserted_weight + " " + measureType;
+                // 메모 사항
+                memo = editMemo.getText().toString();
+
+                StringBuilder stringBuilder = new StringBuilder();
+                // StringBuilder 에 사용자가 입력한 여러 문자열들을 한 문자열 변수에 모두 모은다.
+                stringBuilder.append(date).append(",");
+                stringBuilder.append(petName).append(",");
+                stringBuilder.append(mealType).append(",");
+                stringBuilder.append(foodName).append(",");
+                stringBuilder.append(foodWeight).append(",");
+                stringBuilder.append(memo).append(",");
+                strDataSet = strDataSet + stringBuilder.toString();
+                Log.d("stringBuilder 작동", strDataSet);
+                // split 함수 사용
+                array = strDataSet.split(",");
+                // 합쳐진 문자열을 String array 에 나열
+                for(String box : array) {
+                    System.out.println(box);
+                }
+                // SharedPreference 을 생성하여 작성한 문자열을 저장.
+                SharedPreferences prefs = getSharedPreferences("MEAL_FILE", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+
+                editor.putString("mealLog", strDataSet);
+                editor.apply();
+
+                getSharedPreferencesData();
+
+                // 가져온 내용을 ArrayList에 추가
+//                MealMemoItem mealData = new MealMemoItem(date, petName, foodName, foodWeight, memo);
+//                mArrayList.add(0, mealData);
+//
+//                mAdapter.notifyItemInserted(0);
+//                mAdapter.notifyDataSetChanged();
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+    }
+
     // SharedPreference 에 저장된 문자열을 가져올 때 사용할 메서드
     public void getSharedPreferencesData() {
         SharedPreferences prefs = getSharedPreferences("MEAL_FILE", MODE_PRIVATE);
-        strDataSet = prefs.getString("mealLog", "");
+        String noData = "";
+        strDataSet = prefs.getString("mealLog", noData);
+
+        Log.d("strDataSet 로드 ", strDataSet);
 
         if (strDataSet != null) {
             array = strDataSet.split(",");
             try {
                 // [i] / [i]+1 / [i]+2 / 방식으로 문자열마다 하나의 자리를 생성한다.
-                for(int i=0; i< array.length; i+=3) {
-                    foodName = array[i];
-                    foodWeight = array[i+1];
-                    memo = array [i+2];
+                for(int i=0; i< array.length; i+=6) {
+                    mealDate = array[i];
+                    petName = array[i+1];
+                    mealType = array[i+2];
+                    foodName = array[i+3];
+                    foodWeight = array[i+4];
+                    memo = array [i+5];
 
                     //구분된 문자열을 아이템에 추가한다.
-                    MealMemoItem mealData = new MealMemoItem(foodName, foodWeight, memo);
+                    MealMemoItem mealData = new MealMemoItem(mealDate ,petName, mealType, foodName, foodWeight, memo);
                     mArrayList.add(0, mealData);
                     mAdapter.notifyItemInserted(0);
+                    mAdapter.notifyDataSetChanged();
                 }
             } catch (Exception e) {
-                System.out.println("데이터 로딩 배열 오류");
+                Log.d("배열 분리 ", "오류 발생");
+//                System.out.println("데이터 로딩 배열 오류");
             }
         }
     }
 
-    @Override
-    public void onClick(View v) {
-//        registerMemo();
+    private void showDatePickerDialog() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this, this,
+                Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
     }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        month += 1;
+        String date = year + "/" + month + "/" + dayOfMonth;
+        mealDate = date;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getSharedPreferencesData();
+    }
+
 }
