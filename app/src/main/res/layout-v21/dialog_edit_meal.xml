@@ -51,17 +51,69 @@
 
     </LinearLayout>
 
-    <Spinner
-        android:id="@+id/spinner_dog_name"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:spinnerMode="dialog"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
 
-    <Spinner
-        android:id="@+id/meal_category"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="강아지 이름"
+            android:layout_marginStart="10dp"
+            android:textColor="#000000"
+            android:textSize="15sp"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Spinner
+            android:layout_marginStart="10dp"
+            android:id="@+id/spinner_dog_name"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:spinnerMode="dialog"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:spinnerMode="dialog"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="식사 종류"
+            android:layout_marginStart="10dp"
+            android:textColor="#000000"
+            android:textSize="15sp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Spinner
+            android:layout_marginStart="22dp"
+            android:id="@+id/meal_category"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:spinnerMode="dialog"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -143,14 +195,43 @@
 
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/memo"
-        tools:text=""
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:hint="메모를 입력해 주세요" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="메모"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <EditText
+            android:layout_marginStart="10dp"
+            android:id="@+id/memo"
+            tools:text=""
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:hint="메모를 입력해 주세요" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
 
     <Button
         android:layout_marginHorizontal="5dp"
