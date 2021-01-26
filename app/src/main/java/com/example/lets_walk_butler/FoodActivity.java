@@ -142,7 +142,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         };
     }
     // 수정버튼을 눌렀을 대
-    private void getDialogForEdit(int position) {
+    private void getDialogForEdit(final int position) {
         // 식사할 강아지의 이름 선택을 위해 프로필 데이터 조회
         checkProfiles();
         AlertDialog.Builder builder = new AlertDialog.Builder(FoodActivity.this);
@@ -185,8 +185,6 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String guideMessage = "강아지를 선택해주세요";
                 if(!nameList.get(i).contains(guideMessage)) {
-                    Toast.makeText(getApplicationContext(),nameList.get(i)+"가 선택되었습니다.",
-                            Toast.LENGTH_SHORT).show();
                     // 저장할 강아지 이름 세팅
                     petName = nameList.get(i);
                 }
@@ -261,7 +259,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         });
 
         // Dialog 의 view 와 연결
-        final Button ButtonSubmit = (Button) view.findViewById(R.id.register);
+        final Button buttonSubmit = (Button) view.findViewById(R.id.register);
         final EditText editName = (EditText) view.findViewById(R.id.food_name);
         final EditText editWeight = (EditText) view.findViewById(R.id.food_weight);
         final EditText editMemo = (EditText) view.findViewById(R.id.memo);
@@ -269,8 +267,76 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         editName.setText(mArrayList.get(position).getFood_name());
         editWeight.setText(mArrayList.get(position).getFood_weight());
         editMemo.setText(mArrayList.get(position).getMemo());
-        ButtonSubmit.setText("작성 완료");
+        buttonSubmit.setText("작성 완료");
+        // 작성 완료 버튼 눌렸을 때
         final AlertDialog dialog = builder.create();
+        buttonSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 사용자가 입력한 값을 가져옴
+                String date = datePicker.getText().toString();
+                String name = petName;
+                String category = mealType;
+                String foodName = editName.getText().toString();
+                String weight = editWeight.getText().toString();
+                String measureUnit = measureType;
+                String memo = editMemo.getText().toString();
+                // SharedPreference 을 생성하여 작성한 문자열을 저장.
+                SharedPreferences prefs = getSharedPreferences("MEAL_FILE", MODE_PRIVATE);
+                String noData = "";
+                // 모든 데이터가 들어있는 String
+                String allData = prefs.getString("mealLog", noData);
+                Log.d("쉐어드 DB: ", allData);
+
+                // db에 저장되어있는 string 을 array 로 옮긴다.
+                String[] dataArray;
+                dataArray = allData.split(",");
+                // 사용자에게 보여지는 view 에서는 ( array[5], array[4], array[3].. )
+                // 역순으로 나열되어 있기 때문에
+                // 새로운 array 를 만들어 역순으로 data 를 담는다.
+                ArrayList<String> newList = new ArrayList<String>();
+                //
+                for(int i=dataArray.length-1; i>=0; i--) {
+                    newList.add(dataArray[i]);
+                    Log.d("newList ", dataArray[i]);
+                }
+
+                // 사용자가 선택한 게시글의 번호 * 7 (게시글 구성하는 변수의 개수) ===> 수정 시작 index.
+                // 한 세트에 size + 7 만큼 단어가 들어감
+                int numberOfElement = 7;
+                int startPoint = position * numberOfElement;
+
+                // 사용자가 입력한 부분을 업데이트 한다
+                newList.set(startPoint, memo);
+                newList.set(startPoint + 1, measureUnit);
+                newList.set(startPoint + 2, weight);
+                newList.set(startPoint + 3, foodName);
+                newList.set(startPoint + 4, category);
+                newList.set(startPoint + 5, name);
+                newList.set(startPoint + 6, date);
+
+                // 수정된 array list 를 다시 하나의 string 으로 변환
+                String lastData = "";
+                for(int i=dataArray.length-1; i>=0; i--) {
+                    newList.add(dataArray[i]);
+                    lastData += newList.get(i) + ",";
+                    Log.d("newList22 ", newList.get(i));
+                }
+                Log.d("lastData ", lastData);
+
+                // SharedPreference 에 변환된 문자열을 저장.
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("mealLog", lastData);
+                editor.apply();
+
+                // 저장완료. 바뀐 정보만 View 에 다시 표시
+                MealMemoItem mealData = new MealMemoItem(date, name, category, foodName, weight, measureUnit, memo);
+                mArrayList.set(position, mealData);
+                mAdapter.notifyItemChanged(position);
+
+                dialog.dismiss();
+            }
+        });
         dialog.show();
     }
 
@@ -376,12 +442,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
             }
         });
 
-        // 식사 카테고리 리스트 (식사, 간식, 약, 기타)
-        mealTypeList = new ArrayList<>();
-        mealTypeList.add("식사 카테고리");
-        mealTypeList.add("식사");
-        mealTypeList.add("간식");
-        mealTypeList.add("약");
+        // 식사 카테고리
         // Spinner 에 사용하기 위해 Array Adapter 적용
         mealTypeAdapter = new ArrayAdapter<>(getApplicationContext(),
                 android.R.layout.simple_spinner_dropdown_item, mealTypeList);
@@ -402,11 +463,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
             }
         });
 
-        // 식사량 측정 단위 array list 생성
-        weightList = new ArrayList<>();
-        weightList.add("g");
-        weightList.add("개");
-        weightList.add("ml");
+        // 식사량 측정 단위
         // Spinner 에 사용하기 위해 Array Adapter 적용
         weightAdapter = new ArrayAdapter<>(getApplicationContext(),
                 android.R.layout.simple_spinner_dropdown_item, weightList);
@@ -469,9 +526,9 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
                 // split 함수 사용
                 array = strDataSet.split(",");
                 // 합쳐진 문자열을 String array 에 나열
-                for(String box : array) {
-                    System.out.println(box);
-                }
+//                for(String box : array) {
+//                    System.out.println(box);
+//                }
                 // SharedPreference 을 생성하여 작성한 문자열을 저장.
                 SharedPreferences prefs = getSharedPreferences("MEAL_FILE", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
@@ -482,7 +539,6 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
 //              가져온 내용을 ArrayList에 추가
                 MealMemoItem mealData = new MealMemoItem(mealDate ,petName, mealType, foodName, foodWeight, measureType, memo);
                 mArrayList.add(0, mealData);
-
                 mAdapter.notifyItemInserted(0);
                 mAdapter.notifyDataSetChanged();
                 dialog.dismiss();
