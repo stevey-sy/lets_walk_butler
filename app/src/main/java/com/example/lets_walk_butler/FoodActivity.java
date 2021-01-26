@@ -104,7 +104,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
 //        getSharedPreferencesData();
         listener = new MealListAdapter.MealLogClickListener() {
             @Override
-            public void onRowClick(View view, int position) {
+            public void onRowClick(View view, final int position) {
                 Toast.makeText(getApplicationContext(), "onRowClick " + String.valueOf(position), Toast.LENGTH_SHORT).show();
 //                // 수정, 삭제할건지 고를 수 있는 popup 메뉴 생성
                 PopupMenu p = new PopupMenu(getApplicationContext(), view);
@@ -115,7 +115,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
                         switch(menuItem.getItemId()) {
                             // 수정 버튼
                             case R.id.modify:
-                                getDialogForEdit();
+                                getDialogForEdit(position);
                                 return true;
                             // 삭제 버튼
                             case R.id.delete:
@@ -129,7 +129,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         };
     }
     // 수정버튼을 눌렀을 대
-    private void getDialogForEdit() {
+    private void getDialogForEdit(int position) {
         // 식사할 강아지의 이름 선택을 위해 프로필 데이터 조회
         checkProfiles();
         AlertDialog.Builder builder = new AlertDialog.Builder(FoodActivity.this);
@@ -154,7 +154,22 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
 
         // 강아지 이름 선택
         final Spinner nameSpinner = (Spinner) view.findViewById(R.id.spinner_dog_name);
+        // 선택된 게시글에 저장되어 있던 강아지 이름을 view 에 입힌다.
+        String stored_name = mArrayList.get(position).getPetName();
+        // nameList 에서 stored_name 과 같은 것이 있는지 찾은 후에 그것을 setSelection 한다.
+        int nameIndex = 0;
+        for(int i=0; i< nameList.size(); i++) {
+            if (stored_name.equals(mArrayList.get(i).getPetName())) {
+                nameIndex = i;
+//                Log.d("강아지 Name ", stored_name);
+//                Log.d("강아지 번호 ", String.valueOf(i));
+            }
+        }
+
+//        nameSpinner.setPrompt(mArrayList.get(position).getPetName());
         nameSpinner.setAdapter(namesAdapter);
+        nameSpinner.setSelection(nameIndex);
+        namesAdapter.notifyDataSetChanged();
         nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -184,6 +199,8 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
 
         // 식사의 카테고리(식사, 간식, 약) 정하는 spinner
         final Spinner mealTypeSpinner = (Spinner) view.findViewById(R.id.meal_category);
+        // 선택된 게시글에 저장되어 있던 카테고리를 view 에 입힌다.
+        mealTypeSpinner.setPrompt(mArrayList.get(position).getMealType());
         mealTypeSpinner.setAdapter(mealTypeAdapter);
         mealTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -209,6 +226,8 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
 
         // 먹은 음식의 수량 or 무게를 저장할 단위를 선정하는 spinner
         final Spinner weightSpinner = (Spinner) view.findViewById(R.id.spinner_weight_type);
+        // 선택된 게시글에 저장되어 있던 강아지 이름을 view 에 입힌다.
+        weightSpinner.setPrompt(mArrayList.get(position).getMeasureType());
         weightSpinner.setAdapter(weightAdapter);
         weightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -228,7 +247,10 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         final EditText editName = (EditText) view.findViewById(R.id.food_name);
         final EditText editWeight = (EditText) view.findViewById(R.id.food_weight);
         final EditText editMemo = (EditText) view.findViewById(R.id.memo);
-
+        // 게시글에 저장되어 있던 데이터를 view에 입힌다.
+        editName.setText(mArrayList.get(position).getFood_name());
+        editWeight.setText(mArrayList.get(position).getFood_weight());
+        editMemo.setText(mArrayList.get(position).getMemo());
         ButtonSubmit.setText("작성 완료");
         final AlertDialog dialog = builder.create();
         dialog.show();
