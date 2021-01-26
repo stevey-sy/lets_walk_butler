@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -42,6 +43,8 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
     // 식사 일지를 저장할 array list
     private ArrayList<MealMemoItem> mArrayList;
     private MealListAdapter mAdapter = null;
+    private MealListAdapter.MealLogClickListener listener;
+    private RecyclerView mRecyclerView;
     // 저장되어 있는 강아지 이름 리스트를 담을 array list
     private ArrayList<String> nameList;
     private ArrayAdapter<String> namesAdapter;
@@ -51,6 +54,8 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
     // 식사 타입 리스트
     private ArrayList<String> mealTypeList;
     private ArrayAdapter<String> mealTypeAdapter;
+
+
 
     Toolbar toolbar;
     ActionBar actionBar;
@@ -85,14 +90,149 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
 //        mArrayList.add(data);
         // SharedPreference 에 저장되어 있는 식사 데이터를 로딩
 
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+//        adapter = new ShowRoomAdapter(clothList, ShowRoom.this, listener);
+//        recyclerView.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(FoodActivity.this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // 식사 내용을 저장할 array list 생성
-        mArrayList = new ArrayList<>();
-        mAdapter = new MealListAdapter(getApplicationContext(), mArrayList);
-        mRecyclerView.setAdapter(mAdapter);
+//        mArrayList = new ArrayList<>();
+//        mAdapter = new MealListAdapter(getApplicationContext(), mArrayList, listener);
+//        getSharedPreferencesData();
+        listener = new MealListAdapter.MealLogClickListener() {
+            @Override
+            public void onRowClick(View view, int position) {
+                Toast.makeText(getApplicationContext(), "onRowClick " + String.valueOf(position), Toast.LENGTH_SHORT).show();
+//                // 수정, 삭제할건지 고를 수 있는 popup 메뉴 생성
+                PopupMenu p = new PopupMenu(getApplicationContext(), view);
+                getMenuInflater().inflate(R.menu.setting_context_menu, p.getMenu());
+                p.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch(menuItem.getItemId()) {
+                            // 수정 버튼
+                            case R.id.modify:
+                                getDialogForEdit();
+                                return true;
+                            // 삭제 버튼
+                            case R.id.delete:
+                                return true;
+                        }
+                        return false;
+                    }
+                });
+                p.show();
+            }
+        };
+    }
+    // 수정버튼을 눌렀을 대
+    private void getDialogForEdit() {
+        // 식사할 강아지의 이름 선택을 위해 프로필 데이터 조회
+        checkProfiles();
+        AlertDialog.Builder builder = new AlertDialog.Builder(FoodActivity.this);
+        View view = LayoutInflater.from(FoodActivity.this).inflate(R.layout.dialog_edit_meal, null, false);
+        builder.setView(view);
+
+        // 날짜 선택
+        final EditText datePicker = (EditText) view.findViewById(R.id.tv_meal_date);
+        // 오늘 날짜를 미리 edit text 에 세팅해 놓는다.
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat dateFormat = new SimpleDateFormat ("yyyy/MM/dd");
+        Date todayDate = new Date();
+        String date = dateFormat.format(todayDate);
+        datePicker.setText(date);
+        datePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePickerDialog();
+                datePicker.setText(mealDate);
+            }
+        });
+
+        // 강아지 이름 선택
+        final Spinner nameSpinner = (Spinner) view.findViewById(R.id.spinner_dog_name);
+        nameSpinner.setAdapter(namesAdapter);
+        nameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String guideMessage = "강아지를 선택해주세요";
+                if(!nameList.get(i).contains(guideMessage)) {
+                    Toast.makeText(getApplicationContext(),nameList.get(i)+"가 선택되었습니다.",
+                            Toast.LENGTH_SHORT).show();
+                    // 저장할 강아지 이름 세팅
+                    petName = nameList.get(i);
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Log.d("Name List ", "비어 있음");
+            }
+        });
+
+        // 식사 카테고리 리스트 (식사, 간식, 약, 기타)
+        mealTypeList = new ArrayList<>();
+        mealTypeList.add("식사 카테고리");
+        mealTypeList.add("식사");
+        mealTypeList.add("간식");
+        mealTypeList.add("약");
+        // Spinner 에 사용하기 위해 Array Adapter 적용
+        mealTypeAdapter = new ArrayAdapter<>(getApplicationContext(),
+                android.R.layout.simple_spinner_dropdown_item, mealTypeList);
+
+        // 식사의 카테고리(식사, 간식, 약) 정하는 spinner
+        final Spinner mealTypeSpinner = (Spinner) view.findViewById(R.id.meal_category);
+        mealTypeSpinner.setAdapter(mealTypeAdapter);
+        mealTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // spinner 에서 선택한 측정 단위를 변수에 담는다.
+                mealType = mealTypeList.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Log.d("Weight List ", "비어 있음");
+            }
+        });
+
+        // 식사량 측정 단위 array list 생성
+        weightList = new ArrayList<>();
+        weightList.add("g");
+        weightList.add("개");
+        weightList.add("ml");
+        // Spinner 에 사용하기 위해 Array Adapter 적용
+        weightAdapter = new ArrayAdapter<>(getApplicationContext(),
+                android.R.layout.simple_spinner_dropdown_item, weightList);
+
+        // 먹은 음식의 수량 or 무게를 저장할 단위를 선정하는 spinner
+        final Spinner weightSpinner = (Spinner) view.findViewById(R.id.spinner_weight_type);
+        weightSpinner.setAdapter(weightAdapter);
+        weightSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // spinner 에서 선택한 측정 단위를 변수에 담는다.
+                measureType = weightList.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Log.d("Weight List ", "비어 있음");
+            }
+        });
+
+        // Dialog 의 view 와 연결
+        final Button ButtonSubmit = (Button) view.findViewById(R.id.register);
+        final EditText editName = (EditText) view.findViewById(R.id.food_name);
+        final EditText editWeight = (EditText) view.findViewById(R.id.food_weight);
+        final EditText editMemo = (EditText) view.findViewById(R.id.memo);
+
+        ButtonSubmit.setText("작성 완료");
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
 
     }
 
@@ -208,7 +348,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         mealTypeAdapter = new ArrayAdapter<>(getApplicationContext(),
                 android.R.layout.simple_spinner_dropdown_item, mealTypeList);
 
-        // 먹은 음식의 수량 or 무게를 저장할 단위를 선정하는 spinner
+        // 식사의 카테고리(식사, 간식, 약) 정하는 spinner
         final Spinner mealTypeSpinner = (Spinner) view.findViewById(R.id.meal_category);
         mealTypeSpinner.setAdapter(mealTypeAdapter);
         mealTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -223,7 +363,6 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
                 Log.d("Weight List ", "비어 있음");
             }
         });
-
 
         // 식사량 측정 단위 array list 생성
         weightList = new ArrayList<>();
@@ -272,9 +411,9 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
                 // 식사 종류
                 String inserted_meal_type = mealType;
                 // 사용자가 입력한 음식의 무게 or 개수,
-                String inserted_weight = editWeight.getText().toString();
-                // spinner 에 적용된 단위를 합친다
-                foodWeight = inserted_weight + " " + measureType;
+                foodWeight = editWeight.getText().toString();
+                // spinner 에 적용된 측정 단위
+                String measure = measureType;
                 // 메모 사항
                 memo = editMemo.getText().toString();
 
@@ -285,6 +424,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
                 stringBuilder.append(mealType).append(",");
                 stringBuilder.append(foodName).append(",");
                 stringBuilder.append(foodWeight).append(",");
+                stringBuilder.append(measure).append(",");
                 stringBuilder.append(memo).append(",");
                 strDataSet = strDataSet + stringBuilder.toString();
                 Log.d("stringBuilder 작동", strDataSet);
@@ -301,19 +441,16 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
                 editor.putString("mealLog", strDataSet);
                 editor.apply();
 
-                getSharedPreferencesData();
+//              가져온 내용을 ArrayList에 추가
+                MealMemoItem mealData = new MealMemoItem(mealDate ,petName, mealType, foodName, foodWeight, measureType, memo);
+                mArrayList.add(0, mealData);
 
-                // 가져온 내용을 ArrayList에 추가
-//                MealMemoItem mealData = new MealMemoItem(date, petName, foodName, foodWeight, memo);
-//                mArrayList.add(0, mealData);
-//
-//                mAdapter.notifyItemInserted(0);
-//                mAdapter.notifyDataSetChanged();
+                mAdapter.notifyItemInserted(0);
+                mAdapter.notifyDataSetChanged();
                 dialog.dismiss();
             }
         });
         dialog.show();
-
     }
 
     // SharedPreference 에 저장된 문자열을 가져올 때 사용할 메서드
@@ -323,25 +460,28 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         strDataSet = prefs.getString("mealLog", noData);
 
         Log.d("strDataSet 로드 ", strDataSet);
-
+        mArrayList = new ArrayList<>();
         if (strDataSet != null) {
             array = strDataSet.split(",");
             try {
                 // [i] / [i]+1 / [i]+2 / 방식으로 문자열마다 하나의 자리를 생성한다.
-                for(int i=0; i< array.length; i+=6) {
+                for(int i=0; i< array.length; i+=7) {
                     mealDate = array[i];
                     petName = array[i+1];
                     mealType = array[i+2];
                     foodName = array[i+3];
                     foodWeight = array[i+4];
-                    memo = array [i+5];
+                    measureType = array[i+5];
+                    memo = array [i+6];
 
                     //구분된 문자열을 아이템에 추가한다.
-                    MealMemoItem mealData = new MealMemoItem(mealDate ,petName, mealType, foodName, foodWeight, memo);
+                    MealMemoItem mealData = new MealMemoItem(mealDate ,petName, mealType, foodName, foodWeight, measureType, memo);
                     mArrayList.add(0, mealData);
-                    mAdapter.notifyItemInserted(0);
-                    mAdapter.notifyDataSetChanged();
                 }
+                mAdapter = new MealListAdapter(getApplicationContext(), mArrayList, listener);
+                mAdapter.notifyItemInserted(0);
+                mRecyclerView.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
             } catch (Exception e) {
                 Log.d("배열 분리 ", "오류 발생");
 //                System.out.println("데이터 로딩 배열 오류");

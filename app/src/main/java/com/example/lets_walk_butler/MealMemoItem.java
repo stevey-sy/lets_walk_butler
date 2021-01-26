@@ -11,9 +11,10 @@ public class MealMemoItem {
     private String food_weight;
     private String mealDate;
     private String mealType;
+    private String measureType;
 
 
-    public MealMemoItem(String meal_date, String pet_name, String meal_type, String food_name, String food_weight, String memo) {
+    public MealMemoItem(String meal_date, String pet_name, String meal_type, String food_name, String food_weight, String measure_type, String memo) {
 //        SimpleDateFormat formatter =
 //                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
 //        Date date = new Date();
@@ -27,6 +28,11 @@ public class MealMemoItem {
 //        this.type_category = type_category;
         this.food_name = food_name;
         this.food_weight = food_weight;
+        this.measureType = measure_type;
+    }
+
+    public String getMeasureType() {
+        return measureType;
     }
 
     public String getMealType() {

@@ -1,21 +1,21 @@
 package com.example.lets_walk_butler.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lets_walk_butler.MealMemoItem;
@@ -25,10 +25,13 @@ import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
 
+//import androidx.appcompat.app.AlertDialog;
+
 public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHolder> {
 
     private Context mContext;
     private ArrayList<MealMemoItem> mList;
+    private MealLogClickListener mListener;
 
     // 커스텀 어댑터 생성자
     public MealListAdapter(Context context, int resource, ArrayList<MealMemoItem> itemList) {
@@ -40,9 +43,10 @@ public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHo
         this.mList = list;
     }
 
-    public MealListAdapter(Context context, ArrayList<MealMemoItem> list) {
-        mList = list;
-        mContext = context;
+    public MealListAdapter(Context context, ArrayList<MealMemoItem> list, MealLogClickListener listener) {
+        this.mList = list;
+        this.mContext = context;
+        this.mListener = listener;
     }
 
     @NonNull
@@ -51,9 +55,8 @@ public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHo
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_meal_item, parent, false);
-        ViewHolder viewHolder = new ViewHolder(v);
 
-        return viewHolder;
+        return new ViewHolder(v, mListener);
     }
 
     // 각 아이템의 위치와 데이터를 보관할 holder
@@ -75,6 +78,7 @@ public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHo
         viewHolder.memoText.setText(mList.get(position).getMemo());
         viewHolder.food_name_text.setText(mList.get(position).getFood_name());
         viewHolder.weight_text.setText(mList.get(position).getFood_weight());
+        viewHolder.tvMeasureUnit.setText(mList.get(position).getMeasureType());
     }
 
     @Override
@@ -82,12 +86,17 @@ public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHo
         return this.mList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
+    public interface MealLogClickListener {
+        void onRowClick(View view, int position);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         //TextView categoryText;
         protected TextView memoText;
         TextView tvMealDate;
         TextView tvPetName;
         TextView tvMealType;
+        TextView tvMeasureUnit;
         ImageView mealImage;
 
         SharedPreferences prefs;
@@ -95,36 +104,41 @@ public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHo
         StringBuilder stringBuilder = new StringBuilder();
         String[] array;
 
+        private LinearLayout mRowContainer;
+        MealLogClickListener mListener;
 
         protected TextView food_name_text;
         protected TextView weight_text;
         //TextView type_category_text;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, MealLogClickListener listener) {
             super(itemView);
-            this.mealImage = itemView.findViewById(R.id.meal_image);
-            this.tvMealType = itemView.findViewById(R.id.category);
-            this.tvMealDate = itemView.findViewById(R.id.show_regdate);
-            this.memoText = itemView.findViewById(R.id.show_memo);
-            this.tvPetName = itemView.findViewById(R.id.tv_pet_name);
-            this.food_name_text = itemView.findViewById(R.id.input_food_name);
-            this.weight_text = itemView.findViewById(R.id.input_food_weight);
-            itemView.setOnCreateContextMenuListener(this);
+            mealImage = itemView.findViewById(R.id.meal_image);
+            tvMealType = itemView.findViewById(R.id.category);
+            tvMealDate = itemView.findViewById(R.id.show_regdate);
+            memoText = itemView.findViewById(R.id.show_memo);
+            tvPetName = itemView.findViewById(R.id.tv_pet_name);
+            food_name_text = itemView.findViewById(R.id.input_food_name);
+            weight_text = itemView.findViewById(R.id.input_food_weight);
+            tvMeasureUnit = itemView.findViewById(R.id.tv_measure_unit);
+//            itemView.setOnCreateContextMenuListener(this);
+            mRowContainer = itemView.findViewById(R.id.meal_log_item_view);
+            mListener = listener;
+            mRowContainer.setOnClickListener(this);
         }
         // 사용자가 아이템을 길게 클릭했을 때에 메뉴 생성
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            MenuItem Edit = menu.add(Menu.NONE, 1001, 1, "편집");
-            MenuItem Delete = menu.add(Menu.NONE, 1002, 2, "삭제");
-            // 수정버튼 추가 / 다이어로그 생성 / GETADAPTERPOSITION / 글작성 코드 추가
-            Edit.setOnMenuItemClickListener(onEditMenu);
-            Delete.setOnMenuItemClickListener(onEditMenu);
-        }
+//        @Override
+//        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+//            MenuItem Edit = menu.add(Menu.NONE, 1001, 1, "편집");
+//            MenuItem Delete = menu.add(Menu.NONE, 1002, 2, "삭제");
+//            // 수정버튼 추가 / 다이어로그 생성 / GetAdapterPosition / 글작성 코드 추가
+//            Edit.setOnMenuItemClickListener(onEditMenu);
+//            Delete.setOnMenuItemClickListener(onEditMenu);
+//        }
 
         private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-
                 // 사용자가 수정 버튼 눌렀을 때의 작동
                 switch (item.getItemId()) {
                     case 1001:
@@ -136,7 +150,17 @@ public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHo
                         final EditText edit_name = (EditText) view.findViewById(R.id.food_name);
                         final EditText edit_weight = (EditText) view.findViewById(R.id.food_weight);
                         final EditText edit_memo = (EditText) view.findViewById(R.id.memo);
+                        // 추가된 항목들 (날짜, 강아지 이름, 식사 카테고리, 측정 단위)
+                        // spinner: 강아지 이름, 식사 카테고리, 측정 단위
+                        final EditText datePicker = (EditText) view.findViewById(R.id.tv_meal_date);
+                        final Spinner nameSpinner = (Spinner) view.findViewById(R.id.spinner_dog_name);
+                        final Spinner mealTypeSpinner = (Spinner) view.findViewById(R.id.meal_category);
+                        final Spinner weightSpinner = (Spinner) view.findViewById(R.id.spinner_weight_type);
 
+                        // 먼저 저장된 데이터를 꺼내와서 view 에 입히기
+                        nameSpinner.setPrompt(mList.get(getAdapterPosition()).getPetName());
+                        mealTypeSpinner.setPrompt(mList.get(getAdapterPosition()).getMealType());
+                        weightSpinner.setPrompt(mList.get(getAdapterPosition()).getMeasureType());
                         edit_name.setText(mList.get(getAdapterPosition()).getFood_name());
                         edit_weight.setText(mList.get(getAdapterPosition()).getFood_weight());
                         edit_memo.setText(mList.get(getAdapterPosition()).getMemo());
@@ -224,5 +248,14 @@ public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHo
                return true;
             }
         };
+
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.meal_log_item_view:
+                    mListener.onRowClick(mRowContainer, getAdapterPosition());
+                    break;
+            }
+        }
     }
 }
