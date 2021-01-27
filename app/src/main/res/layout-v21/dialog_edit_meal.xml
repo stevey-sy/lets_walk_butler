@@ -5,7 +5,6 @@
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools">
 
-
     <TextView
         android:id="@+id/meal_log_add_title"
         android:layout_width="match_parent"

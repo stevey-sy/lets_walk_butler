@@ -2,6 +2,7 @@ package com.example.lets_walk_butler;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -90,6 +91,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(FoodActivity.this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mAdapter = new MealListAdapter(getApplicationContext(), mArrayList, listener);
         // 리사이클러 뷰 클릭 이벤트 (수정, 삭제)
         listener = new MealListAdapter.MealLogClickListener() {
             @Override
@@ -108,6 +110,22 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
                                 return true;
                             // 삭제 버튼
                             case R.id.delete:
+                                AlertDialog.Builder dialog = new AlertDialog.Builder(FoodActivity.this);
+                                dialog.setMessage("기록을 삭제하시겠습니까?");
+                                dialog.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        deleteMealLog(position);
+                                        dialog.dismiss();
+                                    }
+                                });
+                                dialog.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                dialog.show();
                                 return true;
                         }
                         return false;
@@ -121,8 +139,74 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         setSpinnerAdapter();
     }
 
-    private void setSpinnerAdapter() {
+    private void deleteMealLog(int position) {
 
+        // 삭제할 부분 탐색
+        // 삭제할 부분의 string 을
+
+        // 사용자에게 보이는 부분
+        // array list 에 들어있는 데이터 삭제
+        mArrayList.remove(position);
+        mAdapter.notifyItemRemoved(position);
+        mAdapter.notifyItemRangeChanged(position, mArrayList.size());
+
+        // shared 에서 data base table 불러오기
+        SharedPreferences prefs = getSharedPreferences("MEAL_FILE", MODE_PRIVATE);
+        String noData = "";
+
+        // 모든 데이터가 들어있는 String
+        String allData = prefs.getString("mealLog", noData);
+        Log.d("쉐어드 DB: ", allData);
+
+        // 삭제할 부분 탐색
+        // db에 저장되어있는 string 을 array 로 옮긴다.
+        String[] dataArray;
+        dataArray = allData.split(",");
+        // 결과:  날씨, 강아지 이름, 식사 카테고리, 음식명, 측정단위, 메모
+
+        // 사용자에게 보여지는 view 에서는 ( array[5], array[4], array[3].. )
+        // 역순으로 나열되어 있기 때문에
+        // 새로운 array 를 만들어 역순으로 data 를 담는다.
+        // 결과:  메모, 측정단위, 음식명, 카테고리, 강아지 이름, 날씨
+        ArrayList<String> newList = new ArrayList<String>();
+        for(int i=dataArray.length-1; i>=0; i--) {
+            newList.add(dataArray[i]);
+        }
+
+        Log.d("newList before ", newList.toString());
+
+        // 사용자가 선택한 게시글의 번호 * 7 (게시글 구성하는 변수의 개수) ===> 수정 시작 index.
+        // 한 세트에 size + 7 만큼 단어가 들어감
+        int numberOfElement = 7;
+        int startPoint = position * numberOfElement;
+
+        // 선택된 부분만 데이터 삭제
+        for (int i=startPoint; i<7; i++) {
+            newList.remove(startPoint);
+//            Log.d("삭제 예정: ", newList.get(i));
+            Log.d("newList 삭제 번호: ", String.valueOf(i));
+            Log.d("newList 삭제 내용: ", newList.get(startPoint));
+        }
+        Log.d("newList after ", newList.toString());
+
+        // 삭제 완료.
+        // array list ---> 역순으로 반복문을 돌려 String 으로 return 한다.
+        // 결과:  날씨, 강아지 이름, 식사 카테고리, 음식명, 측정단위, 메모
+        String lastData = "";
+        for(int i=newList.size()-1; i>=0; i--) {
+            newList.add(dataArray[i]);
+            lastData += newList.get(i) + ",";
+            Log.d("newList22 ", newList.get(i));
+        }
+        Log.d("newList lastData ", lastData);
+
+        // SharedPreference 에 변환된 문자열을 저장.
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("mealLog", lastData);
+        editor.apply();
+    }
+
+    private void setSpinnerAdapter() {
         // 강아지 이름 spinner
         nameList = new ArrayList<>();
         // Shared Preferences 에서 강아지 프로필 조회
