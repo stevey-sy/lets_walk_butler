@@ -4,13 +4,13 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +21,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.example.lets_walk_butler.walk_log.WalkDTO;
@@ -42,6 +45,9 @@ public class WalkDiaryActivity extends AppCompatActivity {
     WalkLogAdapter adapter = null;
     ArrayList<WalkDTO> walkDTOArrayList = new ArrayList<WalkDTO> ();
 
+    Toolbar toolbar;
+    ActionBar actionBar;
+
     String strWalkDate = null;
     String strWalkTime = null;
     String strWalkStepNumber = null;
@@ -53,88 +59,116 @@ public class WalkDiaryActivity extends AppCompatActivity {
 
     ImageView ivPhoto = null;
     public static final int KITKAT_VALUE = 1002;
-
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_walk_diary);
 
+        // 툴바 설정
+        toolbar = findViewById(R.id.toolbar_walk);
+        setSupportActionBar(toolbar);
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_left_arrow);
+
         // 사용자에게 카메라 사용 권한을 묻는다.
         askPermission();
         // 사용자로부터 사용가능한 카메라 기능을 할 수 있는 앱을 확인한다
-        PackageManager packageManager = getPackageManager(); if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-        }
-
+//        PackageManager packageManager = getPackageManager(); if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+//        }
+        
+        // xml 연결
         listView = (ListView) findViewById(R.id.list_view_walk_diary);
         adapter = new WalkLogAdapter(this, R.layout.walk_diary_item, walkDTOArrayList);
-
+        
+        // list view 세팅
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(listener);
         // Context Menu 등록.
         registerForContextMenu(listView);
-
+        // 리스트뷰 클릭 이벤트
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO: 2021-01-27  pop up 메뉴 생성 부분
 
                 WalkDTO item = (WalkDTO) parent.getItemAtPosition(position);
-
             }
         });
 
         // SharedPreference 데이터 로딩
         getSharedPreferenceData();
+    }
 
-        Button addButton = (Button)findViewById(R.id.add_walk_log);
-        addButton.setOnClickListener(new Button.OnClickListener() {
+    // 툴바 메뉴 불러오기
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.profile_menu, menu);
+        return true;
+    }
+    // 툴바 메뉴 클릭시 이벤트 (프로필 추가, 뒤로가기)
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.profile_add:
+                // 메뉴바에서 추가 버튼 눌렸을 때
+                addWalkLog();
+                return true;
+            // 툴바 홈 버튼 눌렀을 때의 이벤트
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void addWalkLog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(WalkDiaryActivity.this);
+        View view = LayoutInflater.from(WalkDiaryActivity.this).inflate(R.layout.dailog_walk_diary, null, false);
+        builder.setView(view);
+
+        final Button BtnSubmit = (Button) view.findViewById(R.id.btn_walk_dialog);
+        final EditText editDate = (EditText) view.findViewById(R.id.insert_walk_date);
+        final EditText editTime = (EditText) view.findViewById(R.id.insert_walk_time);
+        final EditText editStepNumber = (EditText)view.findViewById(R.id.insert_walk_step);
+        final EditText editMemo = (EditText)view.findViewById(R.id.insert_walk_memo);
+        final EditText editMeter = (EditText)view.findViewById(R.id.insert_walk_meter);
+        ivPhoto = (ImageView)view.findViewById(R.id.walklog_photo);
+        ivPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(WalkDiaryActivity.this);
-                View view = LayoutInflater.from(WalkDiaryActivity.this).inflate(R.layout.dailog_walk_diary, null, false);
-                builder.setView(view);
-
-                final Button BtnSubmit = (Button) view.findViewById(R.id.btn_walk_dialog);
-                final EditText editDate = (EditText) view.findViewById(R.id.insert_walk_date);
-                final EditText editTime = (EditText) view.findViewById(R.id.insert_walk_time);
-                final EditText editStepNumber = (EditText)view.findViewById(R.id.insert_walk_step);
-                final EditText editMemo = (EditText)view.findViewById(R.id.insert_walk_memo);
-                final EditText editMeter = (EditText)view.findViewById(R.id.insert_walk_meter);
-                ivPhoto = (ImageView)view.findViewById(R.id.walklog_photo);
-                ivPhoto.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        selectGallery();
-                    }
-                });
-
-                final AlertDialog dialog = builder.create();
-                // 작성 완료 버튼 눌렀을 때
-                BtnSubmit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        strWalkDate = editDate.getText().toString();
-                        strWalkTime = editTime.getText().toString();
-                        strWalkStepNumber = editStepNumber.getText().toString();
-                        strMemo = editMemo.getText().toString();
-                        strMeter = editMeter.getText().toString();
-
-                        WalkDTO item = new WalkDTO (strWalkDate, strWalkTime, strWalkStepNumber, strMeter, strMemo, uriPhoto);
-                        walkDTOArrayList.add(item);
-
-                        saveSettingData();
-
-
-                        adapter.notifyDataSetChanged();
-                        dialog.dismiss();
-
-                        Log.d("리스트뷰 아이템", "추가");
-                    }
-                });
-                dialog.show();
+                selectGallery();
             }
         });
+
+        final AlertDialog dialog = builder.create();
+        // 작성 완료 버튼 눌렀을 때
+        BtnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                strWalkDate = editDate.getText().toString();
+                strWalkTime = editTime.getText().toString();
+                strWalkStepNumber = editStepNumber.getText().toString();
+                strMemo = editMemo.getText().toString();
+                strMeter = editMeter.getText().toString();
+
+                WalkDTO item = new WalkDTO (strWalkDate, strWalkTime, strWalkStepNumber, strMeter, strMemo, uriPhoto);
+                walkDTOArrayList.add(item);
+
+                saveSettingData();
+
+
+                adapter.notifyDataSetChanged();
+                dialog.dismiss();
+
+                Log.d("리스트뷰 아이템", "추가");
+            }
+        });
+        dialog.show();
     }
 
     @Override
@@ -277,22 +311,18 @@ public class WalkDiaryActivity extends AppCompatActivity {
         return true;
     }
 
-    AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        }
-    };
-
     // 사용자에게 사진 사용의 권한을 허가 받는다.
     private void askPermission() {
         PermissionListener permissionListener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
                 // 권한 요청 성공
+                Toast.makeText(getApplicationContext(), "사용 권한을 허가했습니다." , Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onPermissionDenied(ArrayList<String> deniedPermissions) {
                 // 권한 요청 실패
+                Toast.makeText(getApplicationContext(), "사용 권한을 거부하셨습니다. 설정에서 변경이 가능합니다." , Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -324,9 +354,7 @@ public class WalkDiaryActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == KITKAT_VALUE) {
             if (resultCode == Activity.RESULT_OK) {
-
                 uriPhoto = data.getData();
-
                 if (uriPhoto != null) {
                     Glide.with(this).load(uriPhoto.toString()).into(ivPhoto);
                 }
