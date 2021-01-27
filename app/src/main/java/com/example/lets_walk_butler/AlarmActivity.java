@@ -6,14 +6,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.Calendar;
 
@@ -26,10 +30,22 @@ public class AlarmActivity extends AppCompatActivity {
     TextView subheadingAlarm;
     TextView tvAlarmTime;
 
+    Toolbar toolbar;
+    ActionBar actionBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
+
+        // 툴바 설정
+        toolbar = findViewById(R.id.toolbar_alarm);
+        setSupportActionBar(toolbar);
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_left_arrow);
 
         subheadingAlarm = findViewById(R.id.subheading_alarm);
         tvAlarmTime = findViewById(R.id.tv_alarm_time);
@@ -91,7 +107,16 @@ public class AlarmActivity extends AppCompatActivity {
                 sendBroadcast(myIntent);
             }
         });
+    }
 
-
+    // 툴바 메뉴 클릭시 이벤트 (프로필 추가, 뒤로가기)
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
