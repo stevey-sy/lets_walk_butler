@@ -1,7 +1,9 @@
 package com.example.lets_walk_butler;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -37,9 +40,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
-public class WalkDiaryActivity extends AppCompatActivity {
+public class WalkDiaryActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     ListView listView = null;
     WalkLogAdapter adapter = null;
@@ -53,6 +59,7 @@ public class WalkDiaryActivity extends AppCompatActivity {
     String strWalkStepNumber = null;
     String strMemo = null;
     String strMeter = null;
+    String walkDate = null;
     Uri uriPhoto = null;
 
     Intent photoIntent;
@@ -133,6 +140,18 @@ public class WalkDiaryActivity extends AppCompatActivity {
 
         final Button BtnSubmit = (Button) view.findViewById(R.id.btn_walk_dialog);
         final EditText editDate = (EditText) view.findViewById(R.id.insert_walk_date);
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat dateFormat = new SimpleDateFormat ("yyyy/MM/dd");
+        Date todayDate = new Date();
+        String date = dateFormat.format(todayDate);
+        editDate.setText(date);
+        editDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePickerDialog();
+                editDate.setText(walkDate);
+            }
+        });
         final EditText editTime = (EditText) view.findViewById(R.id.insert_walk_time);
         final EditText editStepNumber = (EditText)view.findViewById(R.id.insert_walk_step);
         final EditText editMemo = (EditText)view.findViewById(R.id.insert_walk_memo);
@@ -317,7 +336,6 @@ public class WalkDiaryActivity extends AppCompatActivity {
             @Override
             public void onPermissionGranted() {
                 // 권한 요청 성공
-                Toast.makeText(getApplicationContext(), "사용 권한을 허가했습니다." , Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onPermissionDenied(ArrayList<String> deniedPermissions) {
@@ -434,5 +452,21 @@ public class WalkDiaryActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void showDatePickerDialog() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this, this,
+                Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        month += 1;
+        String date = year + "/" + month + "/" + dayOfMonth;
+        walkDate = date;
     }
 }

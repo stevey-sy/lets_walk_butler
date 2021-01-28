@@ -16,8 +16,6 @@ import com.example.lets_walk_butler.R;
 
 import java.util.ArrayList;
 
-//import androidx.appcompat.app.AlertDialog;
-
 public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHolder> {
 
     private Context mContext;
@@ -44,9 +42,7 @@ public class MealListAdapter extends RecyclerView.Adapter<MealListAdapter.ViewHo
     @Override
     // 뷰홀더를 만든다. 매개변수로
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_meal_item, parent, false);
-
         return new ViewHolder(v, mListener);
     }
 
