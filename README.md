@@ -13,7 +13,7 @@
 - Retrofit
 - Glide
 - TedPermission
-- 
+- Lottie Animation
 
 # 활용한 API
 
