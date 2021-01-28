@@ -52,8 +52,6 @@ public class AlarmActivity extends AppCompatActivity {
 
         subheadingAlarm.setVisibility(View.INVISIBLE);
         tvAlarmTime.setVisibility(View.INVISIBLE);
-
-
         this.context = this;
         // 알람 매니저 설정
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);

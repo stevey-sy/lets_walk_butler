@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:text="식사 LOG"
             android:textSize="22sp"
-            android:textColor="#ffffff" />
+            android:textColor="@color/white" />
 
     </androidx.appcompat.widget.Toolbar>
 

@@ -34,7 +34,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 
 import com.example.lets_walk_butler.adapter.CustomAdapter;
 import com.example.lets_walk_butler.setting_info.SettingItem;
@@ -92,7 +91,7 @@ public class SettingInfoActivity extends AppCompatActivity {
 
         // 사용자에게 카메라 사용 권한을 묻는다.
         askPermission();
-        requestPermissions();
+//        requestPermissions();
         // 사용자로부터 사용가능한 카메라 기능을 할 수 있는 앱을 확인한다
         PackageManager packageManager = getPackageManager(); if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
         }
@@ -151,32 +150,32 @@ public class SettingInfoActivity extends AppCompatActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
-    // 사용자가 권한을 허가했는지 체크하는 메서드
-    private boolean checkPermissions(){
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-            return true;
-        }
-        return false;
-    }
-    // 사용자에게 위치정보 권한을 요청하는 메서드
-    private void requestPermissions(){
-        ActivityCompat.requestPermissions(
-                this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                PERMISSION_ID
-        );
-    }
-
-    // 사용자가 권한을 허가하거나 거절했을 때에 불러오는 메서드
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_ID) {
-            if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-
-            }
-        }
-    }
+//    // 사용자가 권한을 허가했는지 체크하는 메서드
+//    private boolean checkPermissions(){
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+//            return true;
+//        }
+//        return false;
+//    }
+//    // 사용자에게 위치정보 권한을 요청하는 메서드
+//    private void requestPermissions(){
+//        ActivityCompat.requestPermissions(
+//                this,
+//                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                PERMISSION_ID
+//        );
+//    }
+//
+//    // 사용자가 권한을 허가하거나 거절했을 때에 불러오는 메서드
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == PERMISSION_ID) {
+//            if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+//
+//            }
+//        }
+//    }
 
     private void addProfile() {
         // 리스트 아이템 추가할 수 있는 다이어로그 생성
@@ -372,9 +371,11 @@ public class SettingInfoActivity extends AppCompatActivity {
 
         TedPermission.with(this)
                 .setPermissionListener(permissionListener)
-                .setRationaleMessage(getResources().getString(R.string.permission_picture))
+//                .setRationaleMessage(getResources().getString(R.string.permission_picture))
                 .setDeniedMessage(getResources().getString(R.string.permission_setting))
-                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE
+//                       ,Manifest.permission.CAMERA
+                )
                 .check();
     }
 
