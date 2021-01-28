@@ -1,6 +1,7 @@
 package com.example.lets_walk_butler;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -66,6 +67,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.maps.android.SphericalUtil;
 import com.gun0912.tedpermission.PermissionListener;
@@ -120,6 +123,10 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
     String strMeterUpload;
     Double totalDistance = 0.0;
     Double doubleDistance = 0.0;
+    double radius = 0.05;
+    double maximumRadius = 0.1;
+    double distance = 0.0;
+    ArrayList<Polyline> polylines = new ArrayList<Polyline>();
 
     //SupportMapFragment supportMapFragment;
 
@@ -182,28 +189,6 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-//        // step Counter
-//        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-//        stepCountSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-//        if (stepCountSensor == null) {
-//            Toast.makeText(this, "No Step Detected", Toast.LENGTH_SHORT).show();
-//        }
-
-
-        // 사용자에게 카메라 기능 사용의 권한을 묻는다.
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-//                Log.d("카메라 권한", "권한 설정 완료");
-//            } else {
-//                Log.d("카메라 권한", "권한 설정 요청");
-//                ActivityCompat.requestPermissions(GoWalkActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-//            }
-//        }
-
-//        checkPermission();
-//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
-
         // findViewById. 버튼 레이아웃과 클래스 연동
         //setMissionTime = findViewById(R.id.set_mission_time);
         btnWalkStart = findViewById(R.id.walkStartButton);
@@ -244,49 +229,6 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
 //                captureCamera();
             }
         });
-
-        //목표시간 설정 버튼 눌렀을 때의 작동,
-//        btnSetTime.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // 다이어로그를 통해 사용자가 원하는 산책시간을 선택 가능.
-//                AlertDialog.Builder builder = new AlertDialog.Builder(GoWalkActivity.this);
-//                View view = LayoutInflater.from(GoWalkActivity.this).inflate(R.layout.dialog_mission_setting, null, false);
-//                builder.setView(view);
-//
-//                final Button BtnSubmit = view.findViewById(R.id.btn_time_setting);
-//                final EditText editTime = view.findViewById(R.id.setting_time);
-//
-//                final AlertDialog dialog = builder.create();
-//
-//                BtnSubmit.setOnClickListener(new View.OnClickListener() {
-//
-//                    @Override
-//                    public void onClick(View v) {
-//                        setTime = editTime.getText().toString();
-//                        try {
-//                            // 사용자가 설정한 시간만큼 프로그래스바의 최대치가 변경됨.
-//                            mProgressBar.setMax(Integer.parseInt(setTime));
-//                            // 사용자가 설정한 시간만큼 프로그래스바가 증가할 때 textView의 숫자가 올라간다.
-//                            defaultWalkTime = Integer.parseInt(setTime);
-//                        } catch (NumberFormatException e) {
-//                            Log.d("산책 목표 시간", "NumberFormatException");
-//
-//                        } catch (Exception e) {
-//                            Log.d("산책 목표 시간", "Exception");
-//                        }
-//                        tvShowMissionTime.setText(setTime);
-//                        tvShowMissionTime.setVisibility(View.VISIBLE);
-//                        tvSubheadingTime.setVisibility(View.VISIBLE);
-//                        tvSubheadingMinute.setVisibility(View.VISIBLE);
-//                        guideProgress.setVisibility(View.GONE);
-//                        dialog.dismiss();
-//                        Log.d("산책 목표 시간", "설정 부분");
-//                    }
-//                });
-//                dialog.show();
-//            }
-//        });
 
         // 각 버튼 눌렀을 때의 작동
         // 시작 버튼 눌렀을 때,
@@ -524,6 +466,7 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
 
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10))
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
@@ -557,11 +500,16 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
 //                }
                 // 현 위치와 이전 위치의 거리 차이를 구한다.
                 if (tracking == 1) {
-                    // 50m 반경 기준,
-                    double radius = 50;
-                    double distance = SphericalUtil.computeDistanceBetween(currentPosition, previousPosition);
+                    // 2m 반경 기준,
+
+                    distance = SphericalUtil.computeDistanceBetween(currentPosition, previousPosition);
                     // 현위치와 이전위치의 거리차이가 50m 보다 작으면 위치 정보의 차이를 구한다.
-                    if ((distance < radius) && (!previousPosition.equals(currentPosition))) {
+                    // distance = 내가 움직인 거리
+                    // radius = ~m 이상 움직였을 때 의 기준
+                    if ((distance > radius) && (!previousPosition.equals(currentPosition)) && (distance < maximumRadius)) {
+                        Log.d("now distance ", String.valueOf(distance));
+                        Log.d("previous Position ", String.valueOf(previousPosition));
+                        Log.d("current Position ", String.valueOf(currentPosition));
                         doubleDistance = Math.round(distance*100)/100.0;
                     }
                 }
@@ -575,9 +523,28 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
                 // 현재 위치로 마커 생성하고 이동
                 setCurrentLocation(location, markerTitle, markerSnippet);
                 mCurrentLocation = location;
+                drawPath();
             }
         }
     };
+
+    private void drawPath(){
+        //polyline을 그려주는 메소드
+        PolylineOptions options = new PolylineOptions().add(previousPosition).add(currentPosition).width(15).color(Color.BLACK).geodesic(true);
+        polylines.add(mMap.addPolyline(options));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLatLng, 18));
+    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+////        mGoogleApiClient.connect();
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+////        mGoogleApiClient.disconnect();
+//    }
 
     private void startLocationUpdates() {
         if (!checkLocationServicesStatus()) {
@@ -920,73 +887,6 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
-    //    private void getCurrentLocation () {
-//        // Initialize task Location
-//        Task<Location> task = client.getLastLocation();
-//        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-//            @Override
-//            public void onSuccess(final Location location) {
-//                // when Success
-//                if (location != null) {
-//                    // Sync map
-//                    supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-//                        @Override
-//                        public void onMapReady(GoogleMap googleMap) {
-//                            // Initialize Lat Lng
-//                            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//                            // Create marker option
-//                            MarkerOptions options = new MarkerOptions().position(latLng).title("I am there");
-//                            // Zoom Map
-//                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-//                            // Add marker on Map
-//                            googleMap.addMarker(options);
-//                        }
-//                    });
-//                }
-//            }
-//        });
-//    }
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        if (requestCode == 44) {
-//            if (grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                // when permission granted
-//                // call method
-//                getCurrentLocation();
-//            }
-//        }
-//    }
-
-    // 카메라 앱 intent로 불러오기
-//    private void cameraIntent() {
-//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        // Ensure that there's a camera activity to handle the intent
-//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-//            // Create the File where the photo should go
-//            // 사진 파일 생성 과정
-//            File photoFile = null;
-//            try {
-//                photoFile = createImageFile();
-//            } catch (IOException e) {
-//                Log.d(TAG, "cameraIntent : 포토 파일 에러");
-//            }
-//            // Continue only if the File was successfully created
-//            // 파일이 생성되었을 때 진행될 작업
-//            if (photoFile != null) {
-//                uriPhoto = FileProvider.getUriForFile(getApplicationContext(), getPackageName(), photoFile);
-//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriPhoto);
-//                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-//            }
-//        }
-//    }
-    // 이미지를 겔러리에 저장하는 메서드
-//    private void galleryAddPic() {
-//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//        File f = new File(currentPhotoPath);
-//        Uri contentUri = Uri.fromFile(f);
-//        mediaScanIntent.setData(contentUri);
-//        this.sendBroadcast(mediaScanIntent);
-//    }
     // 활용할 수 있는 카메라 앱이 있는 지 체크하는 방법
     public static boolean isIntentAvailable( Context context, String action){
         final PackageManager packageManager = context.getPackageManager();
@@ -1140,14 +1040,19 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
         }
     }
     // 현위치의 GPS, 이전 위치의 GSP의 거리를 Meter 수치로 변경하여 UI에 나타낸다.
+    @SuppressLint("HandlerLeak")
     Handler getMeterUpdateHandler = new Handler() {
 
         public void handleMessage(@NonNull Message msg) {
 
-            if (previousPosition != currentPosition) {
+            if ((distance > radius) && (!previousPosition.equals(currentPosition)) && (distance < maximumRadius)) {
                 totalDistance += doubleDistance;
 
+                // 조건을 건다.
+                // total Distance 가 얼만큼 이상 움직이면
+
                 Double result = Math.round(totalDistance*100)/100.0;
+                Log.d("totalDistance ", String.valueOf(totalDistance));
 
                 meterResult = Double.toString(result);
                 tvMeterCounter.setText(meterResult);
