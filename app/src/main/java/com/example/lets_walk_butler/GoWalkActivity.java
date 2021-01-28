@@ -35,6 +35,8 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -45,8 +47,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
@@ -124,7 +128,7 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
     Double totalDistance = 0.0;
     Double doubleDistance = 0.0;
     double radius = 0.05;
-    double maximumRadius = 0.1;
+    double maximumRadius = 1;
     double distance = 0.0;
     ArrayList<Polyline> polylines = new ArrayList<Polyline>();
 
@@ -148,10 +152,23 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
     String dialogImagePath;
     String [] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    Toolbar toolbar;
+    ActionBar actionBar;
+    Menu action;
+
+//    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 툴바 설정
+//        toolbar = findViewById(R.id.toolbar_walk);
+//        setSupportActionBar(toolbar);
+//        actionBar = getSupportActionBar();
+//        actionBar.setDisplayShowCustomEnabled(true);
+//        actionBar.setDisplayShowTitleEnabled(false);
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+//        actionBar.setHomeAsUpIndicator(R.drawable.ic_left_arrow);
 
         // 레이아웃이 변할때마다 플레그를 세팅한다.
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -285,7 +302,7 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
                 stopWatchThread.interrupt();
                 record = String.valueOf(tvTime.getText());
 //                recordView.setText(record);
-                tvTime.setText(R.string.stopwatch_default);
+                tvTime.setText("00:00:00");
                 // GPS 정보 간 거리차이 연산을 멈춘다.
                 tracking = 0;
                 meterThread.interrupt();
@@ -425,6 +442,18 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
+    }
+
+    // 툴바 메뉴 클릭시 이벤트 (프로필 추가, 뒤로가기)
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            // 툴바 홈 버튼 눌렀을 때의 이벤트
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
