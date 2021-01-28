@@ -56,8 +56,6 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
     private ArrayList<String> mealTypeList;
     private ArrayAdapter<String> mealTypeAdapter;
 
-
-
     Toolbar toolbar;
     ActionBar actionBar;
     Menu action;
@@ -138,18 +136,73 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         // spinner 에 사용할 adapter setting
         setSpinnerAdapter();
     }
+    // 툴바 메뉴 불러오기
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.profile_menu, menu);
+        action = menu;
+        return true;
+    }
+    // 툴바 메뉴 클릭시 이벤트 (프로필 추가, 뒤로가기)
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.profile_add:
+                // 메뉴바에서 추가 버튼 눌렸을 때
+                addMealLog();
+                return true;
+            // 툴바 홈 버튼 눌렀을 때의 이벤트
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
+    // Spinner 에 들어갈 데이터 세팅
+    private void setSpinnerAdapter() {
+        // 강아지 이름 spinner
+        nameList = new ArrayList<>();
+        // Shared Preferences 에서 강아지 프로필 조회
+        // 강아지 이름을 array list 에 추가
+        getPuppyNames(nameList);
+        // 이름 데이터가 들어가 있는 array list 를
+        // Spinner 에 사용하기 위해 Array Adapter 적용
+        namesAdapter = new ArrayAdapter<>(getApplicationContext(),R.layout.spinner_item, nameList);
+        namesAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+
+        // 식사 카테고리 Spinner
+        // 식사 카테고리에 Spinner 에 사용할 array list
+        mealTypeList = new ArrayList<>();
+        mealTypeList.add("식사 카테고리");
+        mealTypeList.add("식사");
+        mealTypeList.add("간식");
+        mealTypeList.add("약");
+        // Spinner 에 사용하기 위해 Array Adapter 적용
+        mealTypeAdapter = new ArrayAdapter<>(getApplicationContext(),R.layout.spinner_item, mealTypeList);
+        mealTypeAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+
+        // 식사량 단위 Spinner
+        // 식사량 측정 단위 Spinner 에 사용할 array list 생성
+        weightList = new ArrayList<>();
+        weightList.add("g");
+        weightList.add("개");
+        weightList.add("ml");
+        weightAdapter = new ArrayAdapter<>(getApplicationContext(),R.layout.spinner_item, weightList);
+        weightAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+    }
+
+    // 기록 삭제 메소드
     private void deleteMealLog(int position) {
 
-        // 삭제할 부분 탐색
-        // 삭제할 부분의 string 을
-
-        // 사용자에게 보이는 부분
-        // array list 에 들어있는 데이터 삭제
+        // 현재 화면 상으로 보이는 array list 에 들어있는 데이터 삭제
+        // (표면상으로 삭제)
         mArrayList.remove(position);
         mAdapter.notifyItemRemoved(position);
         mAdapter.notifyItemRangeChanged(position, mArrayList.size());
 
+        // DB 삭제
         // shared 에서 data base table 불러오기
         SharedPreferences prefs = getSharedPreferences("MEAL_FILE", MODE_PRIVATE);
         String noData = "";
@@ -206,37 +259,6 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         editor.apply();
     }
 
-    private void setSpinnerAdapter() {
-        // 강아지 이름 spinner
-        nameList = new ArrayList<>();
-        // Shared Preferences 에서 강아지 프로필 조회
-        // 강아지 이름을 array list 에 추가
-        getPuppyNames(nameList);
-        // 이름 데이터가 들어가 있는 array list 를
-        // Spinner 에 사용하기 위해 Array Adapter 적용
-        namesAdapter = new ArrayAdapter<>(getApplicationContext(),R.layout.spinner_item, nameList);
-        namesAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-
-        // 식사 카테고리 Spinner
-        // 식사 카테고리에 Spinner 에 사용할 array list
-        mealTypeList = new ArrayList<>();
-        mealTypeList.add("식사 카테고리");
-        mealTypeList.add("식사");
-        mealTypeList.add("간식");
-        mealTypeList.add("약");
-        // Spinner 에 사용하기 위해 Array Adapter 적용
-        mealTypeAdapter = new ArrayAdapter<>(getApplicationContext(),R.layout.spinner_item, mealTypeList);
-        mealTypeAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-
-        // 식사량 단위 Spinner
-        // 식사량 측정 단위 Spinner 에 사용할 array list 생성
-        weightList = new ArrayList<>();
-        weightList.add("g");
-        weightList.add("개");
-        weightList.add("ml");
-        weightAdapter = new ArrayAdapter<>(getApplicationContext(),R.layout.spinner_item, weightList);
-        weightAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-    }
 
     // 수정버튼을 눌렀을 대
     private void getDialogForEdit(final int position) {
@@ -465,30 +487,6 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
                 e.printStackTrace();
             }
         }
-    }
-
-    // 툴바 메뉴 불러오기
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.profile_menu, menu);
-        action = menu;
-        return true;
-    }
-    // 툴바 메뉴 클릭시 이벤트 (프로필 추가, 뒤로가기)
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.profile_add:
-                // 메뉴바에서 추가 버튼 눌렸을 때
-                addMealLog();
-                return true;
-            // 툴바 홈 버튼 눌렀을 때의 이벤트
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void addMealLog() {
