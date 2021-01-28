@@ -18,3 +18,6 @@
 
 - Google Map
 - Open Weather Map
+
+![Weather Forecast](https://user-images.githubusercontent.com/75523999/106118903-f4cd8e00-6197-11eb-893d-bed34e217ce1.JPG)
+![LogRecord](https://user-images.githubusercontent.com/75523999/106119664-cb613200-6198-11eb-8cf0-fc1332a334ca.JPG)
