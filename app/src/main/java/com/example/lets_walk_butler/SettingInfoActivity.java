@@ -106,9 +106,6 @@ public class SettingInfoActivity extends AppCompatActivity {
         // 리스트뷰를 클릭했을 떄 인식하도록 설정
         listView.setOnItemClickListener(listener);
 
-//        settingDataArrayList.add(new SettingItem("랑지","2", "2.5", "비글"));
-//        settingDataArrayList.add(new SettingItem("아리", "4", "3", "치와와"));
-//        // 리스트뷰를 클릭했을 때 컨텍스트메뉴가 생성되도록 설정.
         registerForContextMenu(listView);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

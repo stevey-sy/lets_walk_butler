@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -351,14 +352,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 // Todo  채울것
             } catch (JSONException e) {
-
+                Log.d("날씨 API 에러 ", String.valueOf(e));
             }
         }
     }
     // API를 통해 가져온 날씨 정보를 번역할 메서드드
     private String transferWeather(String weather) {
 
-        weatherDescription = weather.toLowerCase();
+//        weatherDescription = weather.toLowerCase();
 
         if (weather.equals("haze")) {
             animationView = (LottieAnimationView) findViewById(R.id.ani_sunny);
@@ -430,6 +431,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             animationView.setRepeatCount(10);
             animationView.playAnimation();
             tvWeatherGuide.setText("\"집사, 오늘 산책은 쉬어야할 것 같아..ㅠ\"");
+            tvWeatherGuide.setTextColor(Color.parseColor("#a3a3a3"));
             return "비";
         }
         else if (weather.equals("thunderstorm")) {
