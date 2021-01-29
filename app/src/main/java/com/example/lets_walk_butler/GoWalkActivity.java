@@ -127,8 +127,8 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
     String strMeterUpload;
     Double totalDistance = 0.0;
     Double doubleDistance = 0.0;
-    double radius = 0.05;
-    double maximumRadius = 1;
+    double radius = 0.0;
+    double maximumRadius = 0.0;
     double distance = 0.0;
     ArrayList<Polyline> polylines = new ArrayList<Polyline>();
 
@@ -529,8 +529,8 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
 //                }
                 // 현 위치와 이전 위치의 거리 차이를 구한다.
                 if (tracking == 1) {
-                    // 2m 반경 기준,
-
+                    radius = 0.05;
+                    maximumRadius = 4.0;
                     distance = SphericalUtil.computeDistanceBetween(currentPosition, previousPosition);
                     // 현위치와 이전위치의 거리차이가 50m 보다 작으면 위치 정보의 차이를 구한다.
                     // distance = 내가 움직인 거리
@@ -563,17 +563,6 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
         polylines.add(mMap.addPolyline(options));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLatLng, 18));
     }
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-////        mGoogleApiClient.connect();
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-////        mGoogleApiClient.disconnect();
-//    }
 
     private void startLocationUpdates() {
         if (!checkLocationServicesStatus()) {
@@ -758,9 +747,7 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
                         }
                     }).show();
                 }
-
             }
-
         }
     }
 
@@ -787,63 +774,6 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
         builder.create().show();
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-//            Bitmap bitmap = BitmapFactory.decodeFile(imageFilePath);
-//            ExifInterface exif = null;
-//
-//            try {
-//                exif = new ExifInterface(imageFilePath);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            int exifOrientation;
-//            int exifDegree;
-//
-//            if (exif != null) {
-//                exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-//                exifDegree = exifOrientationToDegress(exifOrientation);
-//            } else {
-//                exifDegree = 0;
-//            }
-//
-//            ((ImageView) findViewById(R.id.walklog_photo)).setImageBitmap(rotate(bitmap,exifDegree));
-//
-//        }
-//
-//        if (requestCode == KITKAT_VALUE) {
-//            if (resultCode == Activity.RESULT_OK) {
-//
-//                uriPhoto = data.getData();
-//
-//                if (uriPhoto != null) {
-//                    Glide.with(this).load(uriPhoto.toString()).into(ivPhoto);
-//                }
-//                // do something here
-//            }
-//        }
-//
-//        switch (requestCode) {
-//            case GPS_ENABLE_REQUEST_CODE:
-//
-//                // 사용자가 GPS 활성화 했는지 검사
-//                if (checkLocationServicesStatus()) {
-//                    if (checkLocationServicesStatus()) {
-//                        Log.d(TAG, "onActivityResult : GPS 활성화 되었음");
-//
-//                        needRequest = true;
-//
-//                        return;
-//                    }
-//                }
-//                break;
-//        }
-//    }
-
-//    이게 레알
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -858,32 +788,17 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
                 int exifOrientation;
                 int exifDegree;
-
                 if (exif != null) {
                     exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
                     exifDegree = exifOrientationToDegress(exifOrientation);
                 } else {
                     exifDegree = 0;
                 }
-
                 ((ImageView) findViewById(R.id.photo_view)).setImageBitmap(rotate(bitmap, exifDegree));
                 ImageView imageView = findViewById(R.id.photo_view);
         }
-
-//        if (requestCode == KITKAT_VALUE) {
-//            if (resultCode == Activity.RESULT_OK) {
-//
-//                uriPhoto = data.getData();
-//
-//                if (uriPhoto != null) {
-//                    Glide.with(this).load(uriPhoto.toString()).into(ivPhoto);
-//                }
-//                // do something here
-//            }
-//        }
 
         switch (requestCode) {
             case GPS_ENABLE_REQUEST_CODE:
@@ -943,8 +858,6 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
         return uploadImage;
     }
 
-
-
     PermissionListener permissionlistener = new PermissionListener() {
         @Override
         // 퍼미션이 허용되었을 때의 액션
@@ -958,42 +871,6 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
             Toast.makeText(GoWalkActivity.this, "카메라 권한이 거부됨\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
         }
     };
-
-    private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            //다시 보지 않기 버튼을 만드려면 이 부분에 바로 요청을 하도록 하면 됨
-            // ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSION_CAMERA);
-
-            // 처음 호출시엔 if()안의 부분은 false로 리턴 됨.
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                new AlertDialog.Builder(this)
-                        .setTitle("알림")
-                        .setMessage("저장소 권한이 거부되었습니다. 사용을 원하시면 설정에서 해당 권한을 직접 허용해야 합니다.")
-                        .setNeutralButton("설정", new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int i) {
-                                Intent intent_permission = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                intent_permission.setData(Uri.parse("package:" + getPackageName()));
-                                startActivity(intent_permission);
-
-                            }
-                        })
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                        .setCancelable(false)
-                        .create()
-                        .show();
-
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSION_STORAGE);
-            }
-        }
-    }
 
     public void MissionCompleteNotification () {
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
@@ -1029,7 +906,6 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
 
     }
 
-
     // stop watch에 사용될 핸들러
     Handler handler = new Handler() {
         @Override
@@ -1051,7 +927,6 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
         @Override
         public void run() {
             int i = 0;
-
             while(true) {
                 while(timeCountRunning) {
                     Message msg = new Message();
@@ -1076,13 +951,10 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
 
             if ((distance > radius) && (!previousPosition.equals(currentPosition)) && (distance < maximumRadius)) {
                 totalDistance += doubleDistance;
-
                 // 조건을 건다.
                 // total Distance 가 얼만큼 이상 움직이면
-
                 Double result = Math.round(totalDistance*100)/100.0;
                 Log.d("totalDistance ", String.valueOf(totalDistance));
-
                 meterResult = Double.toString(result);
                 tvMeterCounter.setText(meterResult);
             }
@@ -1095,7 +967,6 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
         @Override
         public void run() {
             int i = 0;
-
             while(true) {
                 while(timeCountRunning) {
                     Message msg = new Message();
@@ -1118,20 +989,6 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
         @Override
     protected void onResume() {
         super.onResume();
-
-//       if (sensorManager != null) {
-//           sensorManager.registerListener(this, stepCountSensor, SensorManager.SENSOR_DELAY_UI);
-//       } else {
-//           Toast.makeText(this, "Sensor Not Found", Toast.LENGTH_SHORT).show();
-//       }
-
-       //            Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-////            if (countSensor != null) {
-////                sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
-////
-////            } else {
-////                Toast.makeText(this, "Sensor Not Found", Toast.LENGTH_SHORT).show();
-////            }
     }
 
         @Override
@@ -1160,12 +1017,6 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
 
     @Override
     public void onClick(View v) {
-
-//        if (v.getId() == R.id.walkStartButton) {
-//            btnWalkStart.setVisibility(View.GONE);
-//            btnWalkPause.setVisibility(View.VISIBLE);
-//            btnWalkFinish.setVisibility(View.VISIBLE);
-//        }
     }
     private void selectGallery () {
 
