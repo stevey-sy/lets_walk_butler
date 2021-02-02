@@ -20,6 +20,9 @@
 - Google Map
 - Open Weather Map
 
+# 영상 자료 URL
+https://youtu.be/PoE8wLrD6RU
+
 # 이미지 첨부
 
 ![Weather Forecast](https://user-images.githubusercontent.com/75523999/106118903-f4cd8e00-6197-11eb-893d-bed34e217ce1.JPG)
