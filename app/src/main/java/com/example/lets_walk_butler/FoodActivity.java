@@ -18,6 +18,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -55,6 +56,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
     // 식사 타입 리스트
     private ArrayList<String> mealTypeList;
     private ArrayAdapter<String> mealTypeAdapter;
+    private TextView guideMessage;
 
     Toolbar toolbar;
     ActionBar actionBar;
@@ -85,6 +87,9 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_left_arrow);
 
+        //xml view 연결
+        guideMessage = (TextView) findViewById(R.id.guide_message_no_data);
+
         // 리사이클러 뷰 세팅
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(FoodActivity.this);
@@ -94,7 +99,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         listener = new MealListAdapter.MealLogClickListener() {
             @Override
             public void onRowClick(View view, final int position) {
-                Toast.makeText(getApplicationContext(), "onRowClick " + String.valueOf(position), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "onRowClick " + String.valueOf(position), Toast.LENGTH_SHORT).show();
 //                // 수정, 삭제 popup 메뉴 생성
                 PopupMenu p = new PopupMenu(getApplicationContext(), view);
                 getMenuInflater().inflate(R.menu.setting_context_menu, p.getMenu());
@@ -234,11 +239,11 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         int startPoint = position * numberOfElement;
 
         // 선택된 부분만 데이터 삭제
-        for (int i=startPoint; i<7; i++) {
+        for (int i=startPoint; i<startPoint+7; i++) {
             newList.remove(startPoint);
 //            Log.d("삭제 예정: ", newList.get(i));
             Log.d("newList 삭제 번호: ", String.valueOf(i));
-            Log.d("newList 삭제 내용: ", newList.get(startPoint));
+//            Log.d("newList 삭제 내용: ", newList.get(startPoint));
         }
         Log.d("newList after ", newList.toString());
 
@@ -260,7 +265,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
     }
 
 
-    // 수정버튼을 눌렀을 대
+    // 수정버튼을 눌렀을 때
     private void getDialogForEdit(final int position) {
         // 식사할 강아지의 이름 선택을 위해 프로필 데이터 조회
         checkProfiles();
@@ -625,7 +630,10 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
                 mArrayList.add(0, mealData);
                 mAdapter.notifyItemInserted(0);
                 mAdapter.notifyDataSetChanged();
+                // no data 메세지 안보이기 처리
+                guideMessage.setVisibility(View.GONE);
                 dialog.dismiss();
+
             }
         });
         dialog.show();
@@ -655,6 +663,11 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
                     //구분된 문자열을 아이템에 추가한다.
                     MealMemoItem mealData = new MealMemoItem(mealDate ,petName, mealType, foodName, foodWeight, measureType, memo);
                     mArrayList.add(0, mealData);
+
+                    if (mArrayList.size() > 0) {
+                        guideMessage.setVisibility(View.GONE);
+                        Log.d("Food guide ", "size is > 0");
+                    }
                 }
                 mAdapter = new MealListAdapter(getApplicationContext(), mArrayList, listener);
                 mAdapter.notifyItemInserted(0);
