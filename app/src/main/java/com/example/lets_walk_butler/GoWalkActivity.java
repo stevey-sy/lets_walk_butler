@@ -194,11 +194,11 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
         locationRequest = new LocationRequest()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 // 1초 간격으로 위치를 업데이트 한다.
-                .setInterval(100000)
+                .setInterval(5000)
 //                .setInterval(UPDATE_INTERVAL_MS)
                 // 가장 빠른 업데이트 간격은 0.5초로 한다.
 //                .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS);
-                .setFastestInterval(5000);
+                .setFastestInterval(3000);
         // 위치정보 준비를 요청한다.
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(locationRequest);
@@ -285,7 +285,6 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
                 // Meter 변수의 합계를 구할 스레드
                 meterThread = new Thread(new meterThread());
                 meterThread.start();
-
             }
         });
 
@@ -325,25 +324,30 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
 
                         final Button BtnSubmit = (Button) view.findViewById(R.id.btn_walk_dialog);
                         final EditText editDate = (EditText) view.findViewById(R.id.insert_walk_date);
+                        @SuppressLint("SimpleDateFormat")
+                        SimpleDateFormat dateFormat = new SimpleDateFormat ("yyyy/MM/dd");
+                        Date todayDate = new Date();
+                        String date = dateFormat.format(todayDate);
+                        editDate.setText(date);
                         final EditText editTime = (EditText) view.findViewById(R.id.insert_walk_time);
                         final EditText editStepNumber = (EditText)view.findViewById(R.id.insert_walk_step);
-                        final EditText editMeter = (EditText)view.findViewById(R.id.insert_walk_meter);
                         final EditText editMemo = (EditText)view.findViewById(R.id.insert_walk_memo);
-                        //ivPhoto = (ImageView)view.findViewById(R.id.walklog_photo);
+                        final EditText editMeter = (EditText)view.findViewById(R.id.insert_walk_meter);
 
                         // SD카드, 앱 내부에 저장된 이미지 불러오기
                         if (uploadImage != null) {
                             dialogImagePath = uploadImage.getAbsolutePath();
+                            //Environment.getExternalStorageDirectory().getAbsolutePath()는 SD카드의 절대경로를 구하는 매소드
+                            //path에 불러올 비트맵파일의 주소명을 초기화 시켜준다.
+                            Log.d("TAG", dialogImagePath);
+                            BitmapFactory.Options bo = new BitmapFactory.Options();
+                            bo.inSampleSize = 2;
+                            Bitmap bmp = BitmapFactory.decodeFile(dialogImagePath, bo);
+                            //저장되있던 비트맵 불러온다.
+                            ImageView imageView = (ImageView)view.findViewById(R.id.walklog_photo);
+                            imageView.setImageBitmap(bmp);
                         }
-                        //Environment.getExternalStorageDirectory().getAbsolutePath()는 SD카드의 절대경로를 구하는 매소드
-                        //path에 불러올 비트맵파일의 주소명을 초기화 시켜준다.
-                        Log.d("TAG", dialogImagePath);
-                        BitmapFactory.Options bo = new BitmapFactory.Options();
-                        bo.inSampleSize = 2;
-                        Bitmap bmp = BitmapFactory.decodeFile(dialogImagePath, bo);
-                        //저장되있던 비트맵 불러온다.
-                        ImageView imageView = (ImageView)view.findViewById(R.id.walklog_photo);
-                        imageView.setImageBitmap(bmp);
+
                         // 최종 시간기록을 불러온다.
                         editTime.setText(record);
                         // 최종 걸음수를 불러온다.
@@ -352,8 +356,8 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
                         editMeter.setText(meterResult);
                         // 기록된 정보를 산책 일지로 넘긴다.
                         final AlertDialog addWalkItemDialog = builder.create();
+                        // 기록 저장 버튼 클릭 이벤트
                         BtnSubmit.setOnClickListener(new View.OnClickListener() {
-
                             @Override
                             public void onClick(View v) {
                                 String strWalkDate = editDate.getText().toString();
@@ -364,9 +368,7 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
                                 // SharedPreference에 저장한다.
                                 SharedPreferences prefs = getSharedPreferences("WALK_FILE", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = prefs.edit();
-
                                 String json = prefs.getString("walkLog", null);
-
                                 try {
                                     if (json == null) {
                                         // json 이 null 일 때에는 App이 null point로 꺼지므로, null 일 때에는 초기화된 JSON Array를 생성.
@@ -402,13 +404,10 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
                                 // 종료된 후에는 메인페이지로 이동한다.
                                 Intent goMainPage = new Intent(GoWalkActivity.this, MainActivity.class);
                                 startActivity(goMainPage);
-
                             }
                         });
                         addWalkItemDialog.show();
-
 //                        final AlertDialog dialog = builder.create();
-
                     }
                 })
                 .setNegativeButton("종료", new DialogInterface.OnClickListener() {
@@ -532,7 +531,7 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
                 // 현 위치와 이전 위치의 거리 차이를 구한다.
                 if (tracking == 1) {
                     radius = 0.05;
-                    maximumRadius = 4.0;
+                    maximumRadius = 5.0;
                     distance = SphericalUtil.computeDistanceBetween(currentPosition, previousPosition);
                     // 현위치와 이전위치의 거리차이가 50m 보다 작으면 위치 정보의 차이를 구한다.
                     // distance = 내가 움직인 거리
