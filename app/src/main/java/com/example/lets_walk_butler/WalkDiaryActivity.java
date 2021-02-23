@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +21,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -61,6 +61,8 @@ public class WalkDiaryActivity extends AppCompatActivity implements DatePickerDi
     String strMeter = null;
     String walkDate = null;
     Uri uriPhoto = null;
+    TextView nodataMessage = null;
+    Button goWalkBtn = null;
 
     Intent photoIntent;
 
@@ -90,6 +92,8 @@ public class WalkDiaryActivity extends AppCompatActivity implements DatePickerDi
         // xml 연결
         listView = (ListView) findViewById(R.id.list_view_walk_diary);
         adapter = new WalkLogAdapter(this, R.layout.walk_diary_item, walkDTOArrayList);
+        nodataMessage = (TextView) findViewById(R.id.walk_diary_nodata_message);
+        goWalkBtn = (Button) findViewById(R.id.walk_diary_start_btn);
         
         // list view 세팅
         listView.setAdapter(adapter);
@@ -100,9 +104,17 @@ public class WalkDiaryActivity extends AppCompatActivity implements DatePickerDi
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO: 2021-01-27  pop up 메뉴 생성 부분
-
                 WalkDTO item = (WalkDTO) parent.getItemAtPosition(position);
+            }
+        });
+
+        // 산책 버튼 클릭이벤트
+        goWalkBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 산책 activity 로 화면 전환
+                Intent intent = new Intent(WalkDiaryActivity.this, GoWalkActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -111,20 +123,20 @@ public class WalkDiaryActivity extends AppCompatActivity implements DatePickerDi
     }
 
     // 툴바 메뉴 불러오기
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.profile_menu, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater menuInflater = getMenuInflater();
+//        menuInflater.inflate(R.menu.profile_menu, menu);
+//        return true;
+//    }
     // 툴바 메뉴 클릭시 이벤트 (프로필 추가, 뒤로가기)
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.profile_add:
-                // 메뉴바에서 추가 버튼 눌렸을 때
-                addWalkLog();
-                return true;
+//            case R.id.profile_add:
+//                // 메뉴바에서 추가 버튼 눌렸을 때
+//                addWalkLog();
+//                return true;
             // 툴바 홈 버튼 눌렀을 때의 이벤트
             case android.R.id.home:
                 finish();
@@ -447,6 +459,12 @@ public class WalkDiaryActivity extends AppCompatActivity implements DatePickerDi
 
                     // 읽어온 데이터를 사용자가 볼 수 있도록 출력한다.
                     walkDTOArrayList.add(new WalkDTO(walkDate,walkTime,walkStepCount,walkMeter,walkMemo,walkPhotoUri));
+
+                    if (walkDTOArrayList.size() > 0) {
+                        nodataMessage.setVisibility(View.GONE);
+                        goWalkBtn.setVisibility(View.GONE);
+                    }
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
