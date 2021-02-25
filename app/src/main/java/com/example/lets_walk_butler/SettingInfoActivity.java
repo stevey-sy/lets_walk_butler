@@ -1,6 +1,7 @@
 package com.example.lets_walk_butler;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -49,7 +50,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class SettingInfoActivity extends AppCompatActivity {
-
 
     ListView listView = null;
     CustomAdapter adapter = null;
@@ -146,33 +146,6 @@ public class SettingInfoActivity extends AppCompatActivity {
         inflater.inflate(R.menu.setting_context_menu, menu);
         super.onCreateContextMenu(menu, v, menuInfo);
     }
-
-//    // 사용자가 권한을 허가했는지 체크하는 메서드
-//    private boolean checkPermissions(){
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-//            return true;
-//        }
-//        return false;
-//    }
-//    // 사용자에게 위치정보 권한을 요청하는 메서드
-//    private void requestPermissions(){
-//        ActivityCompat.requestPermissions(
-//                this,
-//                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                PERMISSION_ID
-//        );
-//    }
-//
-//    // 사용자가 권한을 허가하거나 거절했을 때에 불러오는 메서드
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == PERMISSION_ID) {
-//            if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-//
-//            }
-//        }
-//    }
 
     private void addProfile() {
         // 리스트 아이템 추가할 수 있는 다이어로그 생성
@@ -395,6 +368,10 @@ public class SettingInfoActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 try {
+                    int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    ContentResolver resolver = this.getContentResolver();
+                    resolver.takePersistableUriPermission(data.getData(), takeFlags);
+
                     uriPhoto= data.getData();
                     ivPhoto.setImageURI(uriPhoto);
                     ImageDecoder.Source source = ImageDecoder.createSource(this.getContentResolver(), uriPhoto);
