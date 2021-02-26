@@ -31,6 +31,22 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/walk_diary_nodata_message"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:text="아직 저장된 산책 기록이 없습니다.\n 산책을 기록해 볼까요?" />
+
+    <Button
+        android:id="@+id/walk_diary_start_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="산책 Go!"
+        android:textColor="@color/white"
+        android:background="@drawable/black_round"/>
         
 
 </LinearLayout>
