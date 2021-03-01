@@ -1,4 +1,4 @@
-package com.example.lets_walk_butler;
+package com.project_sy.lets_walk_butler;
 
 import android.app.Notification;
 import android.app.NotificationChannel;

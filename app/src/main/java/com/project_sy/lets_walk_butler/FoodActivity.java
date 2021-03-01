@@ -1,4 +1,4 @@
-package com.example.lets_walk_butler;
+package com.project_sy.lets_walk_butler;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -28,7 +28,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.lets_walk_butler.adapter.MealListAdapter;
+import com.project_sy.lets_walk_butler.adapter.MealListAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;

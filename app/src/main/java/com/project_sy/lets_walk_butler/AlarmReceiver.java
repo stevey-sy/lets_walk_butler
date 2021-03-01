@@ -1,14 +1,11 @@
-package com.example.lets_walk_butler;
+package com.project_sy.lets_walk_butler;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Ringtone;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
-
-import java.util.Objects;
 
 public class AlarmReceiver extends BroadcastReceiver {
 

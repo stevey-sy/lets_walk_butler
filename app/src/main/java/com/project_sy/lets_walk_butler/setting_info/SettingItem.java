@@ -1,4 +1,4 @@
-package com.example.lets_walk_butler.setting_info;
+package com.project_sy.lets_walk_butler.setting_info;
 
 import android.net.Uri;
 import android.widget.Spinner;

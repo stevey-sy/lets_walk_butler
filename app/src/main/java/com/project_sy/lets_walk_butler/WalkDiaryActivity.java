@@ -1,4 +1,4 @@
-package com.example.lets_walk_butler;
+package com.project_sy.lets_walk_butler;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -31,8 +31,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
-import com.example.lets_walk_butler.walk_log.WalkDTO;
-import com.example.lets_walk_butler.walk_log.WalkLogAdapter;
+import com.project_sy.lets_walk_butler.walk_log.WalkDTO;
+import com.project_sy.lets_walk_butler.walk_log.WalkLogAdapter;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 

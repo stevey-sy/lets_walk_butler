@@ -1,4 +1,4 @@
-package com.example.lets_walk_butler;
+package com.project_sy.lets_walk_butler;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import java.util.Calendar;
 
 public class AlarmActivity extends AppCompatActivity {
 
+
     AlarmManager alarmManager;
     TimePicker alarmTimePicker;
     Context context;
@@ -37,6 +39,7 @@ public class AlarmActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
+
 
         // 툴바 설정
         toolbar = findViewById(R.id.toolbar_alarm);
@@ -116,5 +119,24 @@ public class AlarmActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void expression () {
+        for(int i=0; i<5; i++) {
+
+            for (int j=0; j<4; j++) {
+                if(j>0) {
+                    Log.d("esd ", "*");
+                }
+
+            }
+
+        }
+
+        //
+        //  *
+        //  **
+        //  ***
+        //  ****
     }
 }

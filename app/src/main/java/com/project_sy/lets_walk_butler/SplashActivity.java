@@ -1,4 +1,4 @@
-package com.example.lets_walk_butler;
+package com.project_sy.lets_walk_butler;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import com.airbnb.lottie.LottieAnimationView;
 public class SplashActivity extends AppCompatActivity {
 
     LottieAnimationView animationView;
+    int waitingTime = 5000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +25,7 @@ public class SplashActivity extends AppCompatActivity {
         animationView.playAnimation();
 
         Handler handler = new Handler();
-        handler.postDelayed(new splashHandler(), 5000);
+        handler.postDelayed(new splashHandler(), waitingTime);
 
 
     }

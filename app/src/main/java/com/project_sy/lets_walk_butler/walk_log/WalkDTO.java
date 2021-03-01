@@ -1,4 +1,4 @@
-package com.example.lets_walk_butler.walk_log;
+package com.project_sy.lets_walk_butler.walk_log;
 
 import android.net.Uri;
 

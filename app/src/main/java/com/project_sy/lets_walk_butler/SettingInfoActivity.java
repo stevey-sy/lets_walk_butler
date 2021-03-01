@@ -1,10 +1,9 @@
-package com.example.lets_walk_butler;
+package com.project_sy.lets_walk_butler;
 
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,10 +35,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.lets_walk_butler.adapter.CustomAdapter;
-import com.example.lets_walk_butler.setting_info.SettingItem;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.project_sy.lets_walk_butler.adapter.CustomAdapter;
+import com.project_sy.lets_walk_butler.setting_info.SettingItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -93,8 +92,8 @@ public class SettingInfoActivity extends AppCompatActivity {
         askPermission();
 //        requestPermissions();
         // 사용자로부터 사용가능한 카메라 기능을 할 수 있는 앱을 확인한다
-        PackageManager packageManager = getPackageManager(); if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-        }
+//        PackageManager packageManager = getPackageManager(); if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+//        }
 
         // 저장되어있는 SharedPreference 데이터를 불러오는 메서드
         // 레이아웃과 연결

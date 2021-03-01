@@ -1,4 +1,4 @@
-package com.example.lets_walk_butler.adapter;
+package com.project_sy.lets_walk_butler.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,8 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.lets_walk_butler.MealMemoItem;
-import com.example.lets_walk_butler.R;
+import com.project_sy.lets_walk_butler.MealMemoItem;
+import com.project_sy.lets_walk_butler.R;
 
 import java.util.ArrayList;
 

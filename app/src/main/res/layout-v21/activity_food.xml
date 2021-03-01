@@ -28,4 +28,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <TextView
+        android:id="@+id/guide_message_no_data"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:text="아직 저장된 식사 기록이 없습니다. \n\n 반려견의 식사기록을 추가해주세요." />
+
 </LinearLayout>

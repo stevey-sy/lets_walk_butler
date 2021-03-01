@@ -1,4 +1,4 @@
-package com.example.lets_walk_butler.walk_log;
+package com.project_sy.lets_walk_butler.walk_log;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.example.lets_walk_butler.R;
+import com.project_sy.lets_walk_butler.R;
 
 public class WalkItemView extends LinearLayout {
 
