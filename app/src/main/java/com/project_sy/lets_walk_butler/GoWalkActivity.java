@@ -193,8 +193,8 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
 
         locationRequest = new LocationRequest()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                // 1초 간격으로 위치를 업데이트 한다.
-                .setInterval(100000)
+                // 10초 간격으로 위치를 업데이트 한다.
+                .setInterval(10000)
 //                .setInterval(UPDATE_INTERVAL_MS)
                 // 가장 빠른 업데이트 간격은 0.5초로 한다.
 //                .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS);
