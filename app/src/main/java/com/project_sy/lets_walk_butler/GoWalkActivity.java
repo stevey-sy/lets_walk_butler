@@ -176,14 +176,13 @@ public class GoWalkActivity extends AppCompatActivity implements OnMapReadyCallb
         // 라이브러리를 이용한 사용자 권한 허용 요청
         TedPermission.with(getApplicationContext())
                 .setPermissionListener(permissionlistener)
-                .setRationaleMessage("사용자의 움직임을 감지합니다. 동의하나요?")
+//                .setRationaleMessage("사용자의 움직임을 감지합니다. 동의하나요?")
                 .setDeniedMessage("왜 거부하셨어요...\n하지만 [설정] > [권한] 에서 권한을 허용할 수 있어요.")
                 .setPermissions(Manifest.permission.ACTIVITY_RECOGNITION)
                 .check();
         // 카메라 권한 체크 부분
         TedPermission.with(getApplicationContext())
                 .setPermissionListener(permissionlistener)
-                .setRationaleMessage("카메라 권한이 필요합니다.")
                 .setDeniedMessage("거부하셨습니다.")
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
                 .check();
