@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -53,6 +54,7 @@ public class SettingInfoActivity extends AppCompatActivity {
     ListView listView = null;
     CustomAdapter adapter = null;
     ArrayList<SettingItem> settingDataArrayList = new ArrayList<SettingItem>();
+    TextView tv_no_data = null;
 
     Toolbar toolbar;
     ActionBar actionBar;
@@ -87,6 +89,8 @@ public class SettingInfoActivity extends AppCompatActivity {
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_left_arrow);
+
+        tv_no_data = (TextView) findViewById(R.id.setting_info_no_profile);
 
         // 사용자에게 카메라 사용 권한을 묻는다.
         askPermission();
@@ -182,6 +186,7 @@ public class SettingInfoActivity extends AppCompatActivity {
 
                 SettingItem item = new SettingItem (dogName, strAge, dogWeight, dogCategory, uriPhoto);
                 settingDataArrayList.add(item);
+                tv_no_data.setVisibility(View.GONE);
 
                 // SharedPreference 에 데이터를 저장하는 메서드
                 saveSettingData();
@@ -474,6 +479,7 @@ public class SettingInfoActivity extends AppCompatActivity {
         //만약 sharedpreference에 저장된 값이 null이 아니라면,
         if (json != null) {
             try {
+                tv_no_data.setVisibility(View.GONE);
                 JSONArray jsonArray = new JSONArray(json);
                 // Json Array에 저장되어 있던 데이터를 읽어온다.
                 for (int i=0; i< jsonArray.length(); i++) {
