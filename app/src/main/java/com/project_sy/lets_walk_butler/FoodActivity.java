@@ -18,6 +18,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -68,6 +69,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
     String mealDate = null;
     String mealType = null;
     String[] array;
+    TextView tv_no_data = null;
     // 음식이름, 음식무게, 메모 문자열 자료가 합쳐질 변수
     String strDataSet = "";
 
@@ -84,6 +86,8 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_left_arrow);
+
+        tv_no_data = (TextView) findViewById(R.id.guide_message_no_data);
 
         // 리사이클러 뷰 세팅
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
@@ -238,7 +242,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
             newList.remove(startPoint);
 //            Log.d("삭제 예정: ", newList.get(i));
             Log.d("newList 삭제 번호: ", String.valueOf(i));
-            Log.d("newList 삭제 내용: ", newList.get(startPoint));
+//            Log.d("newList 삭제 내용: ", newList.get(startPoint));
         }
         Log.d("newList after ", newList.toString());
 
@@ -596,6 +600,13 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
                 // 메모 사항
                 memo = editMemo.getText().toString();
 
+                // 가져온 내용을 ArrayList에 추가
+                MealMemoItem mealData = new MealMemoItem(mealDate ,petName, mealType, foodName, foodWeight, measureType, memo);
+                mArrayList.add(0, mealData);
+                mAdapter.notifyItemInserted(0);
+                mAdapter.notifyDataSetChanged();
+                tv_no_data.setVisibility(View.GONE);
+
                 StringBuilder stringBuilder = new StringBuilder();
                 // StringBuilder 에 사용자가 입력한 여러 문자열들을 한 문자열 변수에 모두 모은다.
                 stringBuilder.append(date).append(",");
@@ -620,11 +631,6 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
                 editor.putString("mealLog", strDataSet);
                 editor.apply();
 
-//              가져온 내용을 ArrayList에 추가
-                MealMemoItem mealData = new MealMemoItem(mealDate ,petName, mealType, foodName, foodWeight, measureType, memo);
-                mArrayList.add(0, mealData);
-                mAdapter.notifyItemInserted(0);
-                mAdapter.notifyDataSetChanged();
                 dialog.dismiss();
             }
         });
@@ -640,6 +646,7 @@ public class FoodActivity extends AppCompatActivity implements DatePickerDialog.
         Log.d("strDataSet 로드 ", strDataSet);
         mArrayList = new ArrayList<>();
         if (strDataSet != null) {
+            tv_no_data.setVisibility(View.GONE);
             array = strDataSet.split(",");
             try {
                 // [i] / [i]+1 / [i]+2 / 방식으로 문자열마다 하나의 자리를 생성한다.
